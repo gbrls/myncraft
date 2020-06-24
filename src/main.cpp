@@ -23,13 +23,12 @@ string read_file(char* filename) {
 	string str;
 	if(f) {
 		ostringstream ss;
-		ss << f.rdbuf(); // reading data
+		ss << f.rdbuf();
 		str = ss.str();
 	}
 
 	return str;
 }
-
 
 GLuint createShader(GLenum shaderType, string& str_source) {
 
@@ -132,7 +131,6 @@ struct Context {
 
 		shaderVert = createShader(GL_VERTEX_SHADER, vert);
 		shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
-
 
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, shaderVert);
