@@ -16,6 +16,9 @@
 
 #include "include/controls.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "include/stb_image.h"
+
 using namespace std;
 
 const float A = 0.0f;
@@ -25,64 +28,64 @@ const float D = 1.0f * (3.0f/4.0f);
 const float E = 1.0f;
 
 GLfloat cube_vertices[] = {
-	//  x    y     z     r     g     b     u     v
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, A,
-	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A,
-	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, E,
+	//  x    y     z     u  v
+	-0.5f, -0.5f, -0.5f, B, A,
+	0.5f, -0.5f, -0.5f, C, A,
+	0.5f,  0.5f, -0.5f, C, E,
 
-	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, E,
-	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, E,
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, A,
+	0.5f,  0.5f, -0.5f, C, E,
+	-0.5f,  0.5f, -0.5f, B, E,
+	-0.5f, -0.5f, -0.5f, B, A,
 
 	// -------------------------------------------------
 
-	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, A,
-	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, A,
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
+	-0.5f, -0.5f,  0.5f, B, A,
+	0.5f, -0.5f,  0.5f, C, A,
+	0.5f,  0.5f,  0.5f, C, E,
 
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
-	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, E,
-	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, A,
+	0.5f,  0.5f,  0.5f, C, E,
+	-0.5f,  0.5f,  0.5f, B, E,
+	-0.5f, -0.5f,  0.5f, B, A,
 
 	// ----------------------
 
-	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
-	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,E,
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+	-0.5f,  0.5f,  0.5f, C,E,
+	-0.5f,  0.5f, -0.5f, B,E,
+	-0.5f, -0.5f, -0.5f, B,A,
 
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
-	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,A,
-	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+	-0.5f, -0.5f, -0.5f, B,A,
+	-0.5f, -0.5f,  0.5f, C,A,
+	-0.5f,  0.5f,  0.5f, C,E,
 
-	// ---------------------------
+	// -----------------
 
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
-	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,E,
-	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+	0.5f,  0.5f,  0.5f, C,E,
+	0.5f,  0.5f, -0.5f, B,E,
+	0.5f, -0.5f, -0.5f, B,A,
 
-	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
-	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,A,
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+	0.5f, -0.5f, -0.5f, B,A,
+	0.5f, -0.5f,  0.5f, C,A,
+	0.5f,  0.5f,  0.5f, C,E,
 
-	// ------------------------------------
+	// -------------------
 
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, A,A,
-	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
-	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B,E,
+	-0.5f, -0.5f, -0.5f, A,A,
+	0.5f, -0.5f, -0.5f, B,A,
+	0.5f, -0.5f,  0.5f, B,E,
 
-	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B,E,
-	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, A,E,
-	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, A,A,
+	0.5f, -0.5f,  0.5f, B,E,
+	-0.5f, -0.5f,  0.5f, A,E,
+	-0.5f, -0.5f, -0.5f, A,A,
 
 	//-----------------------------------------------
 
-	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A,
-	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, D, A,
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, D, E,
+	-0.5f,  0.5f, -0.5f, C, A,
+	0.5f,  0.5f, -0.5f, D, A,
+	0.5f,  0.5f,  0.5f, D, E,
 
-	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, D, E,
-	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
-	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A
+	0.5f,  0.5f,  0.5f, D, E,
+	-0.5f,  0.5f,  0.5f, C, E,
+	-0.5f,  0.5f, -0.5f, C, A
 };
 
 string read_file(char* filename) {
@@ -130,7 +133,7 @@ struct Context {
 	SDL_Window* window;
 	SDL_GLContext context;
 
-	GLuint shaderProgram, shaderFrag, shaderVert;
+	GLuint shaderProgram, shaderFrag, shaderVert, texture;
 
 	int w, h;
 	bool running;
@@ -154,6 +157,16 @@ struct Context {
 		context = SDL_GL_CreateContext(window);
 		glewExperimental = GL_TRUE;
 		glewInit();
+
+		glEnable(GL_DEPTH_TEST);
+
+		glActiveTexture(GL_TEXTURE0);
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D,texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
 	void update() {
@@ -182,11 +195,15 @@ struct Context {
 	void draw() {
 		if(SDL_GetTicks()-last_draw < 15) return;
 
+		float t = (float)SDL_GetTicks()/1000.0f;
+		setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.2, 1, 0)), (char*)"model");
+
 		glViewport(0,0,w,h);
 		glClearColor(0.1f,0.2f,0.4f,1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES,0,36);
 		glDrawArrays(GL_TRIANGLES,0,36);
 
 		SDL_GL_SwapWindow(window);
@@ -246,20 +263,33 @@ struct Context {
 
 		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 		glEnableVertexAttribArray(posAttrib);
-		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),0);
-
-		GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-		glEnableVertexAttribArray(colAttrib);
-		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
 
 		GLint coordAttrib = glGetAttribLocation(shaderProgram, "texcoord");
 		glEnableVertexAttribArray(coordAttrib);
-		glVertexAttribPointer(colAttrib, 2, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(6*sizeof(float)));
+		glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+
 	}
 
 	void setUniformMatrix(glm::mat4 mat, char* name) {
 		GLint pos = glGetUniformLocation(shaderProgram, name);
 		glUniformMatrix4fv(pos, 1, GL_FALSE, glm::value_ptr(mat));
+	}
+
+	void loadTexture(char* file, char* name) {
+		int width, height, nchannels;
+		unsigned char* data = stbi_load(file, &width, &height, &nchannels,0);
+
+		if(data==NULL) {
+			puts("Image doesn't exist");
+			exit(-1);
+		}
+
+
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE, data);
+
+		stbi_image_free(data);
+		glUniform1i(glGetUniformLocation(shaderProgram, name), 0);
 	}
 };
 
@@ -286,17 +316,20 @@ int main(int argc, char *argv[]) {
 
 	Camera cam;
 
-	cam.pos = glm::vec3(0.0,0,20);
+	cam.pos = glm::vec3(0.0,0,10);
 
 	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
-	//ctx.setUniformMatrix(glm::rotate(glm::mat4(1.0f), 2.0f, glm::vec3(0, 1, 0)), (char*)"model");
+	ctx.setUniformMatrix(glm::mat4(1.0f), (char*)"model");
+
+	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
 	//ctx.loadMeshWithEBO(vertices, sizeof(vertices), elements, sizeof(elements));
 	ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
 
 	SDL_Event event;
 	while(ctx.running) {
+
 		ctx.update();
 		ctx.draw();
 	}

@@ -27,6 +27,8 @@ CLIENTOBJS := $(subst .$(EXT),.o,$(CLIENTSOURCES))
 
 all: mkdirs buildClient clean runClient
 
+debug: mkdirs buildClientDebug clean runClient
+
 game: mkdirs buildClient clean runClient
 
 run: runClient
@@ -34,6 +36,10 @@ run: runClient
 buildClient: $(LIBOBJS) $(CLIENTOBJS)
 	@echo "Linking $(CLIENTNAME)..."
 	$(CC) -o $(OUTPUTDIR)/$(CLIENTNAME) $(LIBOBJS) $(CLIENTOBJS) $(LDLIB) $(CFLAGS)
+
+buildClientDebug: $(LIBOBJS) $(CLIENTOBJS)
+	@echo "Linking (DEBUG) $(CLIENTNAME)..."
+	$(CC) -o $(OUTPUTDIR)/$(CLIENTNAME) $(LIBOBJS) $(CLIENTOBJS) $(LDLIB) $(CFLAGS) -fsanitize=address
 
 %.o : %.$(EXT)
 	$(CC) -c $< -o $@ $(CFLAGS)
