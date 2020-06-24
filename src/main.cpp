@@ -11,12 +11,79 @@
 #include <fstream>
 #include <sstream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "include/controls.hpp"
+
 using namespace std;
 
-#define W 800
-#define H 800
+const float A = 0.0f;
+const float B = 1.0f * (1.0f/4.0f);
+const float C = 1.0f * (2.0f/4.0f);
+const float D = 1.0f * (3.0f/4.0f);
+const float E = 1.0f;
 
-int running = 1;
+GLfloat cube_vertices[] = {
+	//  x    y     z     r     g     b     u     v
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, A,
+	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A,
+	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, E,
+
+	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, E,
+	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, E,
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B, A,
+
+	// -------------------------------------------------
+
+	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, A,
+	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, A,
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
+
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
+	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, E,
+	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B, A,
+
+	// ----------------------
+
+	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,E,
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,A,
+	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+
+	// ---------------------------
+
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,E,
+	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+
+	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,A,
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C,E,
+
+	// ------------------------------------
+
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, A,A,
+	0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, B,A,
+	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B,E,
+
+	0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, B,E,
+	-0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 1.0f, A,E,
+	-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, A,A,
+
+	//-----------------------------------------------
+
+	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A,
+	0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, D, A,
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, D, E,
+
+	0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, D, E,
+	-0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 1.0f, C, E,
+	-0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f, C, A
+};
 
 string read_file(char* filename) {
 	ifstream f(filename);
@@ -119,7 +186,8 @@ struct Context {
 		glClearColor(0.1f,0.2f,0.4f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES,0,36);
 
 		SDL_GL_SwapWindow(window);
 
@@ -140,7 +208,7 @@ struct Context {
 		glUseProgram(shaderProgram);
 	}
 
-	void loadMesh(float* vert, int vsz, GLuint* el, int elsz) {
+	void loadMeshWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
 
 		GLuint vbo;
 		glGenBuffers(1, &vbo);
@@ -163,6 +231,35 @@ struct Context {
 		GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
 		glEnableVertexAttribArray(colAttrib);
 		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(2*sizeof(float)));
+	}
+
+	void loadMeshUV(float* vert, int vsz) {
+
+		GLuint vbo;
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, vsz, vert, GL_STATIC_DRAW);
+
+		GLuint vao;
+		glGenVertexArrays(1,&vao);
+		glBindVertexArray(vao);
+
+		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+		glEnableVertexAttribArray(posAttrib);
+		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),0);
+
+		GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+		glEnableVertexAttribArray(colAttrib);
+		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+
+		GLint coordAttrib = glGetAttribLocation(shaderProgram, "texcoord");
+		glEnableVertexAttribArray(coordAttrib);
+		glVertexAttribPointer(colAttrib, 2, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(6*sizeof(float)));
+	}
+
+	void setUniformMatrix(glm::mat4 mat, char* name) {
+		GLint pos = glGetUniformLocation(shaderProgram, name);
+		glUniformMatrix4fv(pos, 1, GL_FALSE, glm::value_ptr(mat));
 	}
 };
 
@@ -187,7 +284,16 @@ int main(int argc, char *argv[]) {
 		2, 3, 0
 	};
 
-	ctx.loadMesh(vertices, sizeof(vertices), elements, sizeof(elements));
+	Camera cam;
+
+	cam.pos = glm::vec3(0.0,0,20);
+
+	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
+	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
+	//ctx.setUniformMatrix(glm::rotate(glm::mat4(1.0f), 2.0f, glm::vec3(0, 1, 0)), (char*)"model");
+
+	//ctx.loadMeshWithEBO(vertices, sizeof(vertices), elements, sizeof(elements));
+	ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
 
 	SDL_Event event;
 	while(ctx.running) {
