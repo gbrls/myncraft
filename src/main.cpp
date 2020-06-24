@@ -169,11 +169,12 @@ struct Context {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-	void update() {
+	void update(Camera& cam) {
 
-		if(SDL_GetTicks()-last_update < 50) return;
+		if(SDL_GetTicks()-last_update < 10) return;
 
 		SDL_Event e;
+
 
 		while(SDL_PollEvent(&e)) {
 			if(e.type == SDL_QUIT) running = false;
@@ -182,6 +183,12 @@ struct Context {
 				switch(e.key.keysym.sym) {
 					case SDLK_ESCAPE:
 						running = false;
+						break;
+					case SDLK_w:
+						cam.pos.y += 0.5;
+						break;
+					case SDLK_s:
+						cam.pos.y -= 0.5;
 						break;
 					default:
 						break;
@@ -192,11 +199,13 @@ struct Context {
 		last_update = SDL_GetTicks();
 	}
 
-	void draw() {
+	void draw(Camera cam) {
 		if(SDL_GetTicks()-last_draw < 15) return;
 
+		setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
+
 		float t = (float)SDL_GetTicks()/1000.0f;
-		setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.2, 1, 0)), (char*)"model");
+		setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.0, 1, 0)), (char*)"model");
 
 		glViewport(0,0,w,h);
 		glClearColor(0.1f,0.2f,0.4f,1.0f);
@@ -209,7 +218,6 @@ struct Context {
 		SDL_GL_SwapWindow(window);
 
 		last_draw = SDL_GetTicks();
-
 	}
 
 	void loadShader(string& vert, string& frag) {
@@ -268,7 +276,6 @@ struct Context {
 		GLint coordAttrib = glGetAttribLocation(shaderProgram, "texcoord");
 		glEnableVertexAttribArray(coordAttrib);
 		glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
-
 	}
 
 	void setUniformMatrix(glm::mat4 mat, char* name) {
@@ -284,7 +291,6 @@ struct Context {
 			puts("Image doesn't exist");
 			exit(-1);
 		}
-
 
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE, data);
 
@@ -316,11 +322,12 @@ int main(int argc, char *argv[]) {
 
 	Camera cam;
 
-	cam.pos = glm::vec3(0.0,0,10);
+	cam.pos = glm::vec3(0.0,0,5);
 
+	ctx.setUniformMatrix( glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0,0,1)), (char*)"model");
 	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
-	ctx.setUniformMatrix(glm::mat4(1.0f), (char*)"model");
+	//ctx.setUniformMatrix(glm::mat4(1.0f), (char*)"model");
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
@@ -330,8 +337,8 @@ int main(int argc, char *argv[]) {
 	SDL_Event event;
 	while(ctx.running) {
 
-		ctx.update();
-		ctx.draw();
+		ctx.update(cam);
+		ctx.draw(cam);
 	}
 
 	return 0;
