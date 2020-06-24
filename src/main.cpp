@@ -1,51 +1,50 @@
-#include <iostream>
-#include <cstdio>
-#include <fstream>
-#include <sstream>
-
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
 #include <GL/gl.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-#include "./include/hello.hpp"
+using namespace std;
 
-std::string file_to_str(std::string filename) {
-	std::ifstream f(filename);
-	std::string str;
+#define W 800
+#define H 800
+
+int running = 1;
+
+string read_file(char* filename) {
+	ifstream f(filename);
+	string str;
 	if(f) {
-		std::ostringstream ss;
+		ostringstream ss;
 		ss << f.rdbuf(); // reading data
 		str = ss.str();
-	}
-
-	if(str.size() > 10) {
-		char tmp = str[10];
-		str[10] = '\0';
-		str[10] = tmp;
-		printf("File (%s) = (%s)", filename.begin(), str.begin());
-	} else {
-		printf("File (%s) = (%s)", filename.begin(), str.begin());
 	}
 
 	return str;
 }
 
-GLuint create_shader(std::string& src, GLenum type) {
-	GLuint shader = glCreateShader(type);
 
-	src.push_back('\0'); // idk
+GLuint createShader(GLenum shaderType, string& str_source) {
 
-	const GLchar* c_src = (const GLchar *)src.c_str();
-	glShaderSource(shader, 1, &c_src, NULL);
+
+	GLuint shader=glCreateShader(shaderType);
+
+	str_source.push_back('\0');
+	const GLchar *source = (const GLchar *)str_source.c_str();
+
+	cout << "FILE:" << source << '\n';
+
+	glShaderSource(shader, 1, &source, NULL);
 	glCompileShader(shader);
 
 	GLint status;
-
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
 	if(status != GL_TRUE) {
@@ -53,7 +52,7 @@ GLuint create_shader(std::string& src, GLenum type) {
 		char buf[512];
 		glGetShaderInfoLog(shader, 512, NULL, buf);
 
-		std::cout<<"Error compiling shader "<<src<<'\n';
+		puts("Error compiling shader");
 		puts(buf);
 		exit(-1);
 	}
@@ -63,18 +62,18 @@ GLuint create_shader(std::string& src, GLenum type) {
 
 struct Context {
 	SDL_Window* window;
-	SDL_GLContext glContext;
+	SDL_GLContext context;
 
-	int w,h;
+	GLuint shaderProgram, shaderFrag, shaderVert;
+
+	int w, h;
 	bool running;
 	unsigned int last_draw = 0, last_update = 0;
 
-	GLuint shaderProgram, shaderVert, shaderFrag;
-	GLuint vbo, vao, ebo;
-
-	Context (int w, int h, std::string title) {
-
-		window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_OPENGL);
+	Context (int _w, int _h, char* title) {
+		w = _w, h = _h;
+		window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+								  w, h, SDL_WINDOW_OPENGL);
 		if(window==NULL) {
 			puts(SDL_GetError());
 			exit(-1);
@@ -86,12 +85,9 @@ struct Context {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-		glContext = SDL_GL_CreateContext(window);
+		context = SDL_GL_CreateContext(window);
 		glewExperimental = GL_TRUE;
 		glewInit();
-
-		glViewport(0, 0, w, h); // resizing the viewport acording to the window's size
-		shaderProgram = glCreateProgram();
 	}
 
 	void update() {
@@ -120,10 +116,8 @@ struct Context {
 	void draw() {
 		if(SDL_GetTicks()-last_draw < 15) return;
 
-		glUseProgram(shaderProgram);
-
-		glViewport(0, 0, w, h);
-		glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+		glViewport(0,0,w,h);
+		glClearColor(0.1f,0.2f,0.4f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -131,12 +125,16 @@ struct Context {
 		SDL_GL_SwapWindow(window);
 
 		last_draw = SDL_GetTicks();
+
 	}
 
-	void createShader(std::string vert, std::string frag) {
-		shaderVert = create_shader(vert, GL_VERTEX_SHADER);
-		shaderFrag = create_shader(frag, GL_FRAGMENT_SHADER);
+	void loadShader(string& vert, string& frag) {
 
+		shaderVert = createShader(GL_VERTEX_SHADER, vert);
+		shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
+
+
+		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, shaderVert);
 		glAttachShader(shaderProgram, shaderFrag);
 
@@ -144,31 +142,21 @@ struct Context {
 		glUseProgram(shaderProgram);
 	}
 
-	void loadVertices(float* vertices, int sz) {
+	void loadMesh(float* vert, int vsz, GLuint* el, int elsz) {
 
-		float vert[] = {
-			-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-			0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-			-0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
-		};
-
+		GLuint vbo;
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		//glBufferData(GL_ARRAY_BUFFER, sz, vertices, GL_STATIC_DRAW);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vert), vert, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vsz, vert, GL_STATIC_DRAW);
 
+		GLuint vao;
 		glGenVertexArrays(1,&vao);
 		glBindVertexArray(vao);
 
-		GLuint elements[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
+		GLuint ebo;
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elsz, el, GL_STATIC_DRAW);
 
 		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 		glEnableVertexAttribArray(posAttrib);
@@ -177,24 +165,33 @@ struct Context {
 		GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
 		glEnableVertexAttribArray(colAttrib);
 		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(2*sizeof(float)));
-
 	}
 };
 
-int main() {
+int main(int argc, char *argv[]) {
 
-	std::cout<<hello_str()<<'\n';
+	Context ctx = Context(800, 800, (char*)"Hello OpenGL");
 
-	// only do stuff related to opengl after creating a context
-	Context ctx = Context(800, 800, "Myncraft");
+	string vert = read_file((char*)"./src/shaders/main.vert");
+	string frag = read_file((char*)"./src/shaders/main.frag");
 
+	ctx.loadShader(vert, frag);
 
-	std::string frag = file_to_str("./src/shaders/main.frag");
-	std::string vert = file_to_str("./src/shaders/main.vert");
-	ctx.createShader(vert, frag);
+	float vertices[] = {
+		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
+		0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
+		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
+	};
 
-	ctx.loadVertices(NULL, 0);
+	GLuint elements[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
 
+	ctx.loadMesh(vertices, sizeof(vertices), elements, sizeof(elements));
+
+	SDL_Event event;
 	while(ctx.running) {
 		ctx.update();
 		ctx.draw();

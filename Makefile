@@ -29,6 +29,8 @@ all: mkdirs buildClient clean runClient
 
 game: mkdirs buildClient clean runClient
 
+run: runClient
+
 buildClient: $(LIBOBJS) $(CLIENTOBJS)
 	@echo "Linking $(CLIENTNAME)..."
 	$(CC) -o $(OUTPUTDIR)/$(CLIENTNAME) $(LIBOBJS) $(CLIENTOBJS) $(LDLIB) $(CFLAGS)
