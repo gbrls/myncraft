@@ -160,6 +160,8 @@ struct Context {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+
 		context = SDL_GL_CreateContext(window);
 		glewExperimental = GL_TRUE;
 		glewInit();
@@ -185,10 +187,15 @@ struct Context {
 		while(SDL_PollEvent(&e)) {
 			if(e.type == SDL_QUIT) running = false;
 
-			else if(e.type==SDL_KEYDOWN) {
-				float cam_speed = 1.0f;
-				printf("KEY (%u)\n", e.key.keysym.sym);
+			else if(e.type == SDL_MOUSEMOTION) {
 
+				int x = e.motion.xrel, y = e.motion.yrel;
+
+				cam.RotateYaw((float)x * -0.1);
+				cam.RotatePitch((float)y * -0.1);
+
+			} else if(e.type==SDL_KEYDOWN) {
+				float cam_speed = 1.0f;
 				//ctrl.RegUp(e.key.keysym.sym);
 
 				switch(e.key.keysym.sym) {
@@ -254,7 +261,7 @@ struct Context {
 
 		//auto mat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 0, 1));
 		//mat = glm::rotate(mat, t, glm::vec3(0.0, 1, 0));
-		int n = 50;
+		int n = 32;
 		auto mat = glm::mat4(1.0f);
 		for(int i=0;i<n;i++) {
 			for(int j=0;j<n; j++) {
@@ -381,7 +388,7 @@ struct Context {
 
 int main(int argc, char *argv[]) {
 
-	Context ctx = Context(800, 800, (char*)"Hello OpenGL");
+	Context ctx = Context(900, 900, (char*)"Hello OpenGL");
 
 	string vert = read_file((char*)"./src/shaders/main.vert");
 	string frag = read_file((char*)"./src/shaders/main.frag");
@@ -390,7 +397,7 @@ int main(int argc, char *argv[]) {
 	ctx.loadShader(vert, frag);
 
 	Camera cam;
-	Controls ctrl;
+	Controls ctrl = Controls();
 
 	cam.pos = glm::vec3(0.0,0,5);
 
