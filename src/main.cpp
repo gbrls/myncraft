@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -135,6 +136,9 @@ struct Context {
 
 	GLuint shaderProgram, shaderFrag, shaderVert, texture;
 
+	std::vector<GLuint> shaders;
+	int cur_shader = 0;
+
 	int w, h;
 	bool running;
 	unsigned int last_draw = 0, last_update = 0;
@@ -169,7 +173,7 @@ struct Context {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
 
-	void update(Camera& cam) {
+	void update(Camera& cam, Controls& ctrl) {
 
 		if(SDL_GetTicks()-last_update < 10) return;
 
@@ -180,17 +184,42 @@ struct Context {
 			if(e.type == SDL_QUIT) running = false;
 
 			else if(e.type==SDL_KEYDOWN) {
+				float cam_speed = 1.0f;
+				printf("KEY (%u)\n", e.key.keysym.sym);
+
+				//ctrl.RegUp(e.key.keysym.sym);
+
 				switch(e.key.keysym.sym) {
 					case SDLK_ESCAPE:
 						running = false;
 						break;
+
+						// basic movement
+					case SDLK_SPACE:
+						cam.pos.y += cam_speed;
+						break;
+					case SDLK_z:
+						cam.pos.y -= cam_speed;
+						break;
 					case SDLK_w:
-						cam.pos.y += 0.5;
+						cam.pos += cam.foward * cam_speed;
 						break;
 					case SDLK_s:
-						cam.pos.y -= 0.5;
+						cam.pos -= cam.foward * cam_speed;
 						break;
-					default:
+					case SDLK_a:
+						cam.pos -= cam.Right() * cam_speed;
+						break;
+					case SDLK_d:
+						cam.pos += cam.Right() * cam_speed;
+						break;
+
+						//    rotating foward vector
+					case SDLK_e:
+						cam.RotateYaw(-2.0f);
+						break;
+					case SDLK_q:
+						cam.RotateYaw(2.0f);
 						break;
 				}
 			}
@@ -202,10 +231,12 @@ struct Context {
 	void draw(Camera cam) {
 		if(SDL_GetTicks()-last_draw < 15) return;
 
+		// moving the matrix to the camera
 		setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 
 		float t = (float)SDL_GetTicks()/1000.0f;
-		setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.0, 1, 0)), (char*)"model");
+
+		//setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.0, 1, 0)), (char*)"model");
 
 		glViewport(0,0,w,h);
 		glClearColor(0.1f,0.2f,0.4f,1.0f);
@@ -213,11 +244,26 @@ struct Context {
 
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glDrawArrays(GL_TRIANGLES,0,36);
-		glDrawArrays(GL_TRIANGLES,0,36);
+
+		//auto mat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 0, 1));
+		//mat = glm::rotate(mat, t, glm::vec3(0.0, 1, 0));
+		auto mat = glm::mat4(1.0f);
+		for(int i=0;i<10;i++) {
+			for(int j=0;j<10; j++) {
+				setUniformMatrix(glm::translate(mat, glm::vec3(j, i, 0)), (char*)"model");
+
+				glDrawArrays(GL_TRIANGLES,0,36);
+				//glDrawArrays(GL_LINE_STRIP,0,36);
+			}
+		}
 
 		SDL_GL_SwapWindow(window);
 
 		last_draw = SDL_GetTicks();
+	}
+
+	GLuint CurShader() {
+		return shaders[cur_shader];
 	}
 
 	void loadShader(string& vert, string& frag) {
@@ -305,39 +351,27 @@ int main(int argc, char *argv[]) {
 
 	string vert = read_file((char*)"./src/shaders/main.vert");
 	string frag = read_file((char*)"./src/shaders/main.frag");
+	string wire_frag = read_file((char*)"./src/shaders/wireframe.frag");
 
-	ctx.loadShader(vert, frag);
-
-	float vertices[] = {
-		-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-		0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-		-0.5f, -0.5f, 1.0f, 1.0f, 1.0f  // Bottom-left
-	};
-
-	GLuint elements[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
+	ctx.loadShader(vert, wire_frag);
 
 	Camera cam;
+	Controls ctrl;
 
 	cam.pos = glm::vec3(0.0,0,5);
 
-	ctx.setUniformMatrix( glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0,0,1)), (char*)"model");
+	//ctx.setUniformMatrix( glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0,0,1)), (char*)"model");
 	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
-	//ctx.setUniformMatrix(glm::mat4(1.0f), (char*)"model");
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
-	//ctx.loadMeshWithEBO(vertices, sizeof(vertices), elements, sizeof(elements));
 	ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
 
 	SDL_Event event;
 	while(ctx.running) {
 
-		ctx.update(cam);
+		ctx.update(cam, ctrl);
 		ctx.draw(cam);
 	}
 
