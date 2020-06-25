@@ -185,59 +185,20 @@ struct Context {
 
 
 		while(SDL_PollEvent(&e)) {
-			if(e.type == SDL_QUIT) running = false;
-
-			else if(e.type == SDL_MOUSEMOTION) {
-
-				int x = e.motion.xrel, y = e.motion.yrel;
-
-				cam.RotateYaw((float)x * -0.1);
-				cam.RotatePitch((float)y * -0.1);
-
-			} else if(e.type==SDL_KEYDOWN) {
-				float cam_speed = 1.0f;
-				//ctrl.RegUp(e.key.keysym.sym);
-
-				switch(e.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						running = false;
-						break;
-
-						// basic movement
-					case SDLK_SPACE:
-						cam.pos.y += cam_speed;
-						break;
-					case SDLK_z:
-						cam.pos.y -= cam_speed;
-						break;
-					case SDLK_w:
-						cam.pos += cam.foward * cam_speed;
-						break;
-					case SDLK_s:
-						cam.pos -= cam.foward * cam_speed;
-						break;
-					case SDLK_a:
-						cam.pos -= cam.Right() * cam_speed;
-						break;
-					case SDLK_d:
-						cam.pos += cam.Right() * cam_speed;
-						break;
-
-						//    rotating foward vector
-					case SDLK_e:
-						cam.RotateYaw(-2.0f);
-						break;
-					case SDLK_q:
-						cam.RotateYaw(2.0f);
-						break;
-
-					case SDLK_TAB:
-						debug = 1 - debug;
-						setUniformFloat((float)debug, (char*)"percentage");
-						break;
-				}
+			switch (ctrl.Process(e, cam)) {
+				case QUIT:
+					running = 0;
+					break;
+				case TOGGLE_DEBUG:
+					debug = 1 - debug;
+					setUniformFloat((float)debug, (char*)"percentage");
+					break;
+				default:
+					break;
 			}
 		}
+
+		ctrl.Input(cam);
 
 		last_update = SDL_GetTicks();
 	}

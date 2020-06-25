@@ -52,7 +52,8 @@ static const long long int BS_MAX = (1LL<<31);
 namespace Input {
 	enum event {QUIT, PAUSE, TOGGLE_DEBUG, NONE};
 	const int NKEYS = 256;
-	int keys[NKEYS];
+	int keys[NKEYS] = {0};
+	int shift = 0;
 };
 
 using namespace Input;
@@ -60,6 +61,26 @@ using namespace Input;
 struct Controls {
 
 	Controls () {}
+
+	bool IsKeyPressed(SDL_Keycode k) {
+
+		if(SDLK_LSHIFT == k) return shift==1;
+
+		if(k >= NKEYS || k < 0) return false;
+
+		return keys[k]==1;
+	}
+
+	void Input(Camera& cam) {
+		float cam_speed = 0.2f;
+
+		if(IsKeyPressed(SDLK_SPACE)) cam.pos.y += cam_speed;
+		if(IsKeyPressed(SDLK_LSHIFT)) cam.pos.y -= cam_speed;
+		if(IsKeyPressed(SDLK_w)) cam.pos += cam.foward * cam_speed;
+		if(IsKeyPressed(SDLK_s)) cam.pos -= cam.foward * cam_speed;
+		if(IsKeyPressed(SDLK_a)) cam.pos -= cam.Right() * cam_speed;
+		if(IsKeyPressed(SDLK_d)) cam.pos += cam.Right() * cam_speed;
+	}
 
 	event Process(SDL_Event e, Camera& cam) {
 
@@ -74,45 +95,28 @@ struct Controls {
 
 				break;
 			}
-			case SDL_KEYDOWN: {
-				float cam_speed = 1.0f;
-				switch(e.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						return QUIT;
-						break;
-
-						// basic movement
-					case SDLK_SPACE:
-						cam.pos.y += cam_speed;
-						break;
-					case SDLK_z:
-						cam.pos.y -= cam_speed;
-						break;
-					case SDLK_w:
-						cam.pos += cam.foward * cam_speed;
-						break;
-					case SDLK_s:
-						cam.pos -= cam.foward * cam_speed;
-						break;
-					case SDLK_a:
-						cam.pos -= cam.Right() * cam_speed;
-						break;
-					case SDLK_d:
-						cam.pos += cam.Right() * cam_speed;
-						break;
-
-						//    rotating foward vector
-					case SDLK_e:
-						cam.RotateYaw(-2.0f);
-						break;
-					case SDLK_q:
-						cam.RotateYaw(2.0f);
-						break;
-
-					case SDLK_TAB:
-						return TOGGLE_DEBUG;
-						break;
+			case SDL_KEYUP: {
+				auto k = e.key.keysym.sym;
+				if(k < NKEYS && k >= 0) {
+					keys[k] = 0;
 				}
+
+				if(k == SDLK_LSHIFT) shift = 0;
+
+				break;
+			}
+			case SDL_KEYDOWN: {
+
+				auto k = e.key.keysym.sym;
+				if(k < NKEYS && k >= 0) {
+					keys[k] = 1;
+				}
+
+				if(k == SDLK_LSHIFT) shift = 1;
+
+				if(k == SDLK_TAB) return TOGGLE_DEBUG;
+				if(k == SDLK_ESCAPE) return QUIT;
+
 				break;
 			}
 			default:
@@ -121,8 +125,7 @@ struct Controls {
 		}
 
 
-		puts("ERR CASE INPU");
-		exit(-1);
+		return NONE;
 	}
 
 };
