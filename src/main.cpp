@@ -142,6 +142,8 @@ struct Context {
 	int w, h;
 	bool running;
 	unsigned int last_draw = 0, last_update = 0;
+	int debug=0;
+
 
 	Context (int _w, int _h, char* title) {
 		w = _w, h = _h;
@@ -221,6 +223,11 @@ struct Context {
 					case SDLK_q:
 						cam.RotateYaw(2.0f);
 						break;
+
+					case SDLK_TAB:
+						debug = 1 - debug;
+						setUniformFloat((float)debug, (char*)"percentage");
+						break;
 				}
 			}
 		}
@@ -247,13 +254,19 @@ struct Context {
 
 		//auto mat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 0, 1));
 		//mat = glm::rotate(mat, t, glm::vec3(0.0, 1, 0));
+		int n = 50;
 		auto mat = glm::mat4(1.0f);
-		for(int i=0;i<10;i++) {
-			for(int j=0;j<10; j++) {
-				setUniformMatrix(glm::translate(mat, glm::vec3(j, i, 0)), (char*)"model");
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<n; j++) {
+				for(int k=0;k<n;k++) {
 
-				glDrawArrays(GL_TRIANGLES,0,36);
-				//glDrawArrays(GL_LINE_STRIP,0,36);
+					if(!(i == 0 || j == 0 || k == 0 || i == n-1 || j == n-1 || k == n-1)) continue;
+
+					setUniformMatrix(glm::translate(mat, glm::vec3(i, j, k)), (char*)"model");
+
+					if (!debug) glDrawArrays(GL_TRIANGLES,0,36);
+					else glDrawArrays(GL_LINE_STRIP,0,36);
+				}
 			}
 		}
 
@@ -262,21 +275,37 @@ struct Context {
 		last_draw = SDL_GetTicks();
 	}
 
-	GLuint CurShader() {
+	GLuint& CurShader() {
 		return shaders[cur_shader];
+	}
+
+	void SwitchShader(int id) {
+		cur_shader = id;
+		glUseProgram(CurShader());
 	}
 
 	void loadShader(string& vert, string& frag) {
 
+		shaders.push_back(0);
+		int bef = cur_shader;
+		cur_shader = shaders.size()-1;
+
 		shaderVert = createShader(GL_VERTEX_SHADER, vert);
 		shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
 
-		shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, shaderVert);
-		glAttachShader(shaderProgram, shaderFrag);
 
-		glLinkProgram(shaderProgram);
-		glUseProgram(shaderProgram);
+
+		//shaderProgram = glCreateProgram();
+		CurShader() = glCreateProgram();
+
+		glAttachShader(CurShader(), shaderVert);
+		glAttachShader(CurShader(), shaderFrag);
+
+		glLinkProgram(CurShader());
+		glUseProgram(CurShader());
+
+		cur_shader = bef;
+		glUseProgram(CurShader());
 	}
 
 	void loadMeshWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
@@ -295,11 +324,11 @@ struct Context {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elsz, el, GL_STATIC_DRAW);
 
-		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+		GLint posAttrib = glGetAttribLocation(CurShader(), "position");
 		glEnableVertexAttribArray(posAttrib);
 		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
 
-		GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
+		GLint colAttrib = glGetAttribLocation(CurShader(), "color");
 		glEnableVertexAttribArray(colAttrib);
 		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(2*sizeof(float)));
 	}
@@ -315,18 +344,23 @@ struct Context {
 		glGenVertexArrays(1,&vao);
 		glBindVertexArray(vao);
 
-		GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
+		GLint posAttrib = glGetAttribLocation(CurShader(), "position");
 		glEnableVertexAttribArray(posAttrib);
 		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
 
-		GLint coordAttrib = glGetAttribLocation(shaderProgram, "texcoord");
+		GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
 		glEnableVertexAttribArray(coordAttrib);
 		glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
 	}
 
 	void setUniformMatrix(glm::mat4 mat, char* name) {
-		GLint pos = glGetUniformLocation(shaderProgram, name);
+		GLint pos = glGetUniformLocation(CurShader(), name);
 		glUniformMatrix4fv(pos, 1, GL_FALSE, glm::value_ptr(mat));
+	}
+
+	void setUniformFloat(float f, char* name) {
+		GLint pos = glGetUniformLocation(CurShader(), name);
+		glUniform1f(pos, f);
 	}
 
 	void loadTexture(char* file, char* name) {
@@ -341,7 +375,7 @@ struct Context {
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE, data);
 
 		stbi_image_free(data);
-		glUniform1i(glGetUniformLocation(shaderProgram, name), 0);
+		glUniform1i(glGetUniformLocation(CurShader(), name), 0);
 	}
 };
 
@@ -353,7 +387,7 @@ int main(int argc, char *argv[]) {
 	string frag = read_file((char*)"./src/shaders/main.frag");
 	string wire_frag = read_file((char*)"./src/shaders/wireframe.frag");
 
-	ctx.loadShader(vert, wire_frag);
+	ctx.loadShader(vert, frag);
 
 	Camera cam;
 	Controls ctrl;
@@ -363,6 +397,7 @@ int main(int argc, char *argv[]) {
 	//ctx.setUniformMatrix( glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0,0,1)), (char*)"model");
 	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
+	ctx.setUniformFloat(0.0f, (char*)"percentage");
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
