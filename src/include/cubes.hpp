@@ -12,8 +12,9 @@ static const float D = 1.0f * (3.0f/4.0f);
 static const float E = 1.0f;
 static const int SZ = 32;
 
-std::vector<float> topFace(float x, float y, float z) {
-	float a=A,b=B,c=C,e=E;
+std::vector<float> topFace(float x, float y, float z, bool bottom) {
+	float a=A,b=B,c=C,d=D,e=E;
+	if(bottom) a = c, b = d;
 
 	//e*=10;
 	return {
@@ -32,13 +33,13 @@ std::vector<float> sideFace(float x, float y, float z) {
 
 	//e*=10;
 	return {
-		-0.5f+x, -0.5f+y, -0.5f+z, a, a,
+		-0.5f+x, -0.5f+y, -0.5f+z, b, e,
 		-0.5f+x, 0.5f+y, -0.5f+z, b, a,
-		-0.5f+x, -0.5f+y, 0.5f+z, a, e,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e,
 
 		-0.5f+x, 0.5f+y, -0.5f+z, b, a,
-		-0.5f+x, 0.5f+y, 0.5f+z, b, a,
-		-0.5f+x, -0.5f+y, 0.5f+z, a, e
+		-0.5f+x, 0.5f+y, 0.5f+z, c, a,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e
 	};
 }
 
@@ -47,13 +48,13 @@ std::vector<float> frontFace(float x, float y, float z) {
 
 	//e*=10;
 	return {
-		-0.5f+x, -0.5f+y, 0.5f+z, a, a,
+		-0.5f+x, -0.5f+y, 0.5f+z, b, e,
 		-0.5f+x, 0.5f+y, 0.5f+z, b, a,
-		0.5f+x, -0.5f+y, 0.5f+z, a, e,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e,
 
 		-0.5f+x, 0.5f+y, 0.5f+z, b, a,
-		0.5f+x, 0.5f+y, 0.5f+z, b, a,
-		0.5f+x, -0.5f+y, 0.5f+z, b, a
+		0.5f+x, 0.5f+y, 0.5f+z, c, a,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e
 	};
 }
 
@@ -62,7 +63,7 @@ struct Chunk {
 	char visited[SZ][SZ][SZ];
 
 	Chunk () {
-		siv::PerlinNoise perlin(10);
+		siv::PerlinNoise perlin(100);
 		float s = 10.0f;
 
 		memset(mat, 0, sizeof(mat));
@@ -74,7 +75,7 @@ struct Chunk {
 					int x = i - SZ/2, y = j - SZ/2, z = k - SZ/2;
 
 					mat[i][j][k] = 1;
-					if((x*x)+(y*y)+(z*z) > 80) mat[i][j][k] = 0;
+					if((x*x)+(y*y)+(z*z) > 200) mat[i][j][k] = 0;
 					if(prob < 0) mat[i][j][k]=0;
 				}
 			}
@@ -87,7 +88,7 @@ struct Chunk {
 		std::vector<float> vec;
 
 		_mesh(0, 0, 0, 1, 0, vec);
-		printf("Created %d faces\n", (vec.size())/(5*6));
+		printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
 
 		return vec;
 	}
@@ -99,12 +100,12 @@ struct Chunk {
 			std::vector<float> v;
 
 			if(id==1 && sig == 1) {
-				v = topFace(i, j-1, k);
+				v = topFace(i, j-1, k, true);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==1 && sig == -1) {
-				v = topFace(i, j, k);
+				v = topFace(i, j, k, false);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 

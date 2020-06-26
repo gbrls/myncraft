@@ -1,3 +1,7 @@
+/*
+** TODO: change GL_TRIANGLES to GL_QUADS
+ */
+
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SDL2/SDL_opengl.h>
@@ -24,73 +28,6 @@
 
 using namespace std;
 
-//const float A = 0.0f;
-//const float B = 1.0f * (1.0f/4.0f);
-//const float C = 1.0f * (2.0f/4.0f);
-//const float D = 1.0f * (3.0f/4.0f);
-//const float E = 1.0f;
-
-GLfloat cube_vertices[] = {
-	//  x    y     z     u  v
-	-0.5f, -0.5f, -0.5f, B, A,
-	0.5f, -0.5f, -0.5f, C, A,
-	0.5f,  0.5f, -0.5f, C, E,
-
-	0.5f,  0.5f, -0.5f, C, E,
-	-0.5f,  0.5f, -0.5f, B, E,
-	-0.5f, -0.5f, -0.5f, B, A,
-
-	// -------------------------------------------------
-
-	-0.5f, -0.5f,  0.5f, B, A,
-	0.5f, -0.5f,  0.5f, C, A,
-	0.5f,  0.5f,  0.5f, C, E,
-
-	0.5f,  0.5f,  0.5f, C, E,
-	-0.5f,  0.5f,  0.5f, B, E,
-	-0.5f, -0.5f,  0.5f, B, A,
-
-	// ----------------------
-
-	-0.5f,  0.5f,  0.5f, C,E,
-	-0.5f,  0.5f, -0.5f, B,E,
-	-0.5f, -0.5f, -0.5f, B,A,
-
-	-0.5f, -0.5f, -0.5f, B,A,
-	-0.5f, -0.5f,  0.5f, C,A,
-	-0.5f,  0.5f,  0.5f, C,E,
-
-	// -----------------
-
-	0.5f,  0.5f,  0.5f, C,E,
-	0.5f,  0.5f, -0.5f, B,E,
-	0.5f, -0.5f, -0.5f, B,A,
-
-	0.5f, -0.5f, -0.5f, B,A,
-	0.5f, -0.5f,  0.5f, C,A,
-	0.5f,  0.5f,  0.5f, C,E,
-
-	// -------------------
-
-	-0.5f, -0.5f, -0.5f, A,A,
-	0.5f, -0.5f, -0.5f, B,A,
-	0.5f, -0.5f,  0.5f, B,E,
-
-	0.5f, -0.5f,  0.5f, B,E,
-	-0.5f, -0.5f,  0.5f, A,E,
-	-0.5f, -0.5f, -0.5f, A,A,
-
-	//-----------------------------------------------
-
-	-0.5f,  0.5f, -0.5f, C, A,
-	0.5f,  0.5f, -0.5f, D, A,
-	0.5f,  0.5f,  0.5f, D, E,
-
-	0.5f,  0.5f,  0.5f, D, E,
-	-0.5f,  0.5f,  0.5f, C, E,
-	-0.5f,  0.5f, -0.5f, C, A
-};
-
 string read_file(char* filename) {
 	ifstream f(filename);
 	string str;
@@ -104,7 +41,6 @@ string read_file(char* filename) {
 }
 
 GLuint createShader(GLenum shaderType, string& str_source) {
-
 
 	GLuint shader=glCreateShader(shaderType);
 
@@ -247,9 +183,6 @@ struct Context {
 		shaderVert = createShader(GL_VERTEX_SHADER, vert);
 		shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
 
-
-
-		//shaderProgram = glCreateProgram();
 		CurShader() = glCreateProgram();
 
 		glAttachShader(CurShader(), shaderVert);
@@ -287,7 +220,7 @@ struct Context {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elsz, el, GL_STATIC_DRAW);
 	}
 
-	void loadMeshUV(float* vert, int vsz) {
+	GLuint loadMeshUV(float* vert, int vsz) {
 
 		GLuint vbo;
 		glGenBuffers(1, &vbo);
@@ -305,6 +238,8 @@ struct Context {
 		GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
 		glEnableVertexAttribArray(coordAttrib);
 		glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+
+		return vao;
 	}
 
 	void setUniformMatrix(glm::mat4 mat, char* name) {
@@ -358,21 +293,19 @@ int main(int argc, char *argv[]) {
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
-	//ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
 	//auto mesh = topFace(10,0,0);
 	//ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 
 	Chunk chunk = Chunk();
 	auto chunk_mesh = chunk.Mesh();
-	ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
-
+	GLuint chunk_vao = ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
 
 	auto fun = [&chunk, &ctx]() -> void {
 		for(int i=0;i<32;i++) {
 			for(int j=0;j<32;j++) {
 				for(int k=0;k<32;k++) {
 					if(chunk.mat[i][j][k]==0) continue;
-					ctx.setUniformMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, j, k)), "model");
+					ctx.setUniformMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, j, k)), (char*)"model");
 					glDrawArrays(GL_TRIANGLES,0,36);
 				}
 			}
@@ -382,7 +315,6 @@ int main(int argc, char *argv[]) {
 	auto fun2 = [&ctx, &chunk_mesh]() -> void {
 		glDrawArrays(GL_TRIANGLES,0,chunk_mesh.size()/5);
 	};
-
 
 	SDL_Event event;
 	while(ctx.running) {

@@ -29,7 +29,7 @@ struct Camera {
 	}
 
 	glm::mat4 Proj() {
-		return glm::perspective(glm::radians(45.0f), ratio, 1.0f, 500.0f);
+		return glm::perspective(glm::radians(60.0f), ratio, 1.0f, 500.0f);
 	}
 
 	glm::vec3 Right() {
