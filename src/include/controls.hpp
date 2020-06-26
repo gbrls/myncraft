@@ -13,8 +13,12 @@ struct Camera {
 	glm::vec3 pos;
 	glm::vec3 foward;
 	float yaw;
+	float ratio;
 
-	Camera () {
+	Camera (int w, int h) {
+
+		ratio = (float)w/(float)h;
+
 		pos = glm::vec3(0.0, 0.0, -10.0);
 		foward = glm::vec3(0.0, 0.0, -1.0);
 	}
@@ -25,7 +29,7 @@ struct Camera {
 	}
 
 	glm::mat4 Proj() {
-		return glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, 500.0f);
+		return glm::perspective(glm::radians(45.0f), ratio, 1.0f, 500.0f);
 	}
 
 	glm::vec3 Right() {
@@ -80,6 +84,9 @@ struct Controls {
 		if(IsKeyPressed(SDLK_s)) cam.pos -= cam.foward * cam_speed;
 		if(IsKeyPressed(SDLK_a)) cam.pos -= cam.Right() * cam_speed;
 		if(IsKeyPressed(SDLK_d)) cam.pos += cam.Right() * cam_speed;
+
+
+		if(IsKeyPressed(SDLK_c)) printf("(%0.2f, %0.2f, %0.2f)\n", cam.pos.x, cam.pos.y, cam.pos.z);
 	}
 
 	event Process(SDL_Event e, Camera& cam) {

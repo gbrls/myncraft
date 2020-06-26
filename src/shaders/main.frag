@@ -12,6 +12,10 @@ void main() {
 
     vec2 coord = TexCoord * 1.;
 
+    // repeating textures;
+    //coord.y *= 2;
+    //coord.x *= 2;
+
     vec4 c = mix(texture(texBlock, (coord)), wirecolor, percentage);
     c.a = 0.2;
 

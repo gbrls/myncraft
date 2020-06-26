@@ -11,22 +11,24 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <functional>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "include/controls.hpp"
+#include "include/cubes.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 
 using namespace std;
 
-const float A = 0.0f;
-const float B = 1.0f * (1.0f/4.0f);
-const float C = 1.0f * (2.0f/4.0f);
-const float D = 1.0f * (3.0f/4.0f);
-const float E = 1.0f;
+//const float A = 0.0f;
+//const float B = 1.0f * (1.0f/4.0f);
+//const float C = 1.0f * (2.0f/4.0f);
+//const float D = 1.0f * (3.0f/4.0f);
+//const float E = 1.0f;
 
 GLfloat cube_vertices[] = {
 	//  x    y     z     u  v
@@ -147,6 +149,7 @@ struct Context {
 
 	Context (int _w, int _h, char* title) {
 		w = _w, h = _h;
+		running = true;
 		window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 								  w, h, SDL_WINDOW_OPENGL);
 		if(window==NULL) {
@@ -192,6 +195,8 @@ struct Context {
 				case TOGGLE_DEBUG:
 					debug = 1 - debug;
 					setUniformFloat((float)debug, (char*)"percentage");
+					if(debug) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+					else glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 					break;
 				default:
 					break;
@@ -203,7 +208,7 @@ struct Context {
 		last_update = SDL_GetTicks();
 	}
 
-	void draw(Camera cam) {
+	void draw(Camera cam, const std::function <void ()>& f) {
 		if(SDL_GetTicks()-last_draw < 15) return;
 
 		// moving the matrix to the camera
@@ -217,26 +222,7 @@ struct Context {
 		glClearColor(0.1f,0.2f,0.4f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glDrawArrays(GL_TRIANGLES,0,36);
-
-		//auto mat = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 0, 1));
-		//mat = glm::rotate(mat, t, glm::vec3(0.0, 1, 0));
-		int n = 32;
-		auto mat = glm::mat4(1.0f);
-		for(int i=0;i<n;i++) {
-			for(int j=0;j<n; j++) {
-				for(int k=0;k<n;k++) {
-
-					if(!(i == 0 || j == 0 || k == 0 || i == n-1 || j == n-1 || k == n-1)) continue;
-
-					setUniformMatrix(glm::translate(mat, glm::vec3(i, j, k)), (char*)"model");
-
-					if (!debug) glDrawArrays(GL_TRIANGLES,0,36);
-					else glDrawArrays(GL_LINE_STRIP,0,36);
-				}
-			}
-		}
+		f();
 
 		SDL_GL_SwapWindow(window);
 
@@ -276,7 +262,7 @@ struct Context {
 		glUseProgram(CurShader());
 	}
 
-	void loadMeshWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
+	void loadMeshUVWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
 
 		GLuint vbo;
 		glGenBuffers(1, &vbo);
@@ -287,18 +273,18 @@ struct Context {
 		glGenVertexArrays(1,&vao);
 		glBindVertexArray(vao);
 
+		GLint posAttrib = glGetAttribLocation(CurShader(), "position");
+		glEnableVertexAttribArray(posAttrib);
+		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
+
+		GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
+		glEnableVertexAttribArray(coordAttrib);
+		glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+
 		GLuint ebo;
 		glGenBuffers(1, &ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elsz, el, GL_STATIC_DRAW);
-
-		GLint posAttrib = glGetAttribLocation(CurShader(), "position");
-		glEnableVertexAttribArray(posAttrib);
-		glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
-
-		GLint colAttrib = glGetAttribLocation(CurShader(), "color");
-		glEnableVertexAttribArray(colAttrib);
-		glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(2*sizeof(float)));
 	}
 
 	void loadMeshUV(float* vert, int vsz) {
@@ -347,9 +333,12 @@ struct Context {
 	}
 };
 
+
 int main(int argc, char *argv[]) {
 
-	Context ctx = Context(900, 900, (char*)"Hello OpenGL");
+	int w = 1400, h = 900;
+
+	Context ctx = Context(w, h, (char*)"Hello OpenGL");
 
 	string vert = read_file((char*)"./src/shaders/main.vert");
 	string frag = read_file((char*)"./src/shaders/main.frag");
@@ -357,25 +346,49 @@ int main(int argc, char *argv[]) {
 
 	ctx.loadShader(vert, frag);
 
-	Camera cam;
+	Camera cam = Camera(w,h);
 	Controls ctrl = Controls();
 
-	cam.pos = glm::vec3(0.0,0,5);
+	cam.pos = glm::vec3(16,16,40);
 
-	//ctx.setUniformMatrix( glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0,0,1)), (char*)"model");
+	ctx.setUniformMatrix(glm::mat4(1.0), (char*)"model");
 	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
 	ctx.setUniformFloat(0.0f, (char*)"percentage");
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
-	ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
+	//ctx.loadMeshUV(cube_vertices, sizeof(cube_vertices));
+	//auto mesh = topFace(10,0,0);
+	//ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
+
+	Chunk chunk = Chunk();
+	auto chunk_mesh = chunk.Mesh();
+	ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
+
+
+	auto fun = [&chunk, &ctx]() -> void {
+		for(int i=0;i<32;i++) {
+			for(int j=0;j<32;j++) {
+				for(int k=0;k<32;k++) {
+					if(chunk.mat[i][j][k]==0) continue;
+					ctx.setUniformMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, j, k)), "model");
+					glDrawArrays(GL_TRIANGLES,0,36);
+				}
+			}
+		}
+	};
+
+	auto fun2 = [&ctx, &chunk_mesh]() -> void {
+		glDrawArrays(GL_TRIANGLES,0,chunk_mesh.size()/5);
+	};
+
 
 	SDL_Event event;
 	while(ctx.running) {
 
 		ctx.update(cam, ctrl);
-		ctx.draw(cam);
+		ctx.draw(cam, fun2);
 	}
 
 	return 0;
