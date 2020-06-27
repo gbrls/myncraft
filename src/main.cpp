@@ -61,37 +61,27 @@ int main(int argc, char *argv[]) {
 
 	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
 
-	Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
-	auto chunk_mesh = chunk.Mesh();
-	auto chunk1_mesh = chunk1.Mesh();
-	GLuint chunk0_vao = ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
-	GLuint chunk1_vao = ctx.loadMeshUV(&chunk1_mesh[0], chunk1_mesh.size()*sizeof(float));
-
-	auto fun = [&chunk, &ctx]() -> void {
-		for(int i=0;i<32;i++) {
-			for(int j=0;j<32;j++) {
-				for(int k=0;k<32;k++) {
-					if(chunk.mat[i][j][k]==0) continue;
-					ctx.setUniformMatrix(glm::translate(glm::mat4(1.0f), glm::vec3(i, j, k)), (char*)"model");
-					glDrawArrays(GL_TRIANGLES,0,36);
-				}
-			}
+	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
+	vector<Chunk> chunks;
+	for(int i=0;i<8;i++) {
+		for(int j=0;j<8;j++) {
+			chunks.push_back(Chunk(i,0,j));
 		}
-	};
+	}
 
-	auto fun2 = [&ctx, &chunk_mesh, &chunk1_mesh, &chunk0_vao, &chunk1_vao]() -> void {
+	auto fun = [&ctx, &chunks]() -> void {
 
-		glBindVertexArray(chunk0_vao);
-		glDrawArrays(GL_TRIANGLES,0,chunk_mesh.size()/5);
-		glBindVertexArray(chunk1_vao);
-		glDrawArrays(GL_TRIANGLES,0,chunk1_mesh.size()/5);
+		for(Chunk& c : chunks) {
+			glBindVertexArray(c.Vao(ctx));
+			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
+		}
 	};
 
 	SDL_Event event;
 	while(ctx.running) {
 
 		ctx.update(cam, ctrl);
-		ctx.draw(cam, fun2);
+		ctx.draw(cam, fun);
 	}
 
 	return 0;
