@@ -296,9 +296,12 @@ int main(int argc, char *argv[]) {
 	//auto mesh = topFace(10,0,0);
 	//ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 
-	Chunk chunk = Chunk();
+	Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	auto chunk_mesh = chunk.Mesh();
-	GLuint chunk_vao = ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
+	auto chunk1_mesh = chunk1.Mesh();
+	GLuint chunk0_vao = ctx.loadMeshUV(&chunk_mesh[0], chunk_mesh.size()*sizeof(float));
+	GLuint chunk1_vao = ctx.loadMeshUV(&chunk1_mesh[0], chunk1_mesh.size()*sizeof(float));
+
 
 	auto fun = [&chunk, &ctx]() -> void {
 		for(int i=0;i<32;i++) {
@@ -312,8 +315,12 @@ int main(int argc, char *argv[]) {
 		}
 	};
 
-	auto fun2 = [&ctx, &chunk_mesh]() -> void {
+	auto fun2 = [&ctx, &chunk_mesh, &chunk1_mesh, &chunk0_vao, &chunk1_vao]() -> void {
+
+		glBindVertexArray(chunk0_vao);
 		glDrawArrays(GL_TRIANGLES,0,chunk_mesh.size()/5);
+		glBindVertexArray(chunk1_vao);
+		glDrawArrays(GL_TRIANGLES,0,chunk1_mesh.size()/5);
 	};
 
 	SDL_Event event;

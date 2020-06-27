@@ -33,7 +33,7 @@ struct Camera {
 	}
 
 	glm::vec3 Right() {
-		return glm::cross(foward, glm::vec3(0, 1, 0));
+		return glm::normalize(glm::cross(foward, glm::vec3(0, 1, 0)));
 	}
 
 	void RotateYaw(float angle) {
