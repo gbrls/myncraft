@@ -1,13 +1,9 @@
-CLIENTDIR := src
+DIR := src
 
 # binary output directory name
 OUTPUTDIR := bin
 
-# name for the output(binary) of the client code
-CLIENTNAME := game
-
-# libary code directory name
-LIBDIR := src/lib
+NAME := Myncraft
 
 # add C flags, like: CFLAGS := -Wall -Werror -Wconversion -Wextra
 CFLAGS :=
@@ -21,11 +17,11 @@ MK := mkdir -p
 
 EXT := cpp
 
-CLIENTSOURCES := $(shell find $(CLIENTDIR) -type f -name *.$(EXT))
+SRC := $(shell find $(DIR) -type f -name *.$(EXT))
 
-CLIENTOBJS := $(subst .$(EXT),.o,$(CLIENTSOURCES))
+OBJS := $(subst .$(EXT),.o,$(SRC))
 
-all: mkdirs buildClient clean runClient
+all: mkdirs buildClient runClient
 
 debug: mkdirs buildClientDebug clean runClient
 
@@ -33,23 +29,25 @@ game: mkdirs buildClient clean runClient
 
 run: runClient
 
-buildClient: $(LIBOBJS) $(CLIENTOBJS)
-	@echo "Linking $(CLIENTNAME)..."
-	$(CC) -o $(OUTPUTDIR)/$(CLIENTNAME) $(LIBOBJS) $(CLIENTOBJS) $(LDLIB) $(CFLAGS)
+buildClient: $(OBJS)
+	@echo "Linking $(NAME)..."
+	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS)
 
-buildClientDebug: $(LIBOBJS) $(CLIENTOBJS)
-	@echo "Linking (DEBUG) $(CLIENTNAME)..."
-	$(CC) -o $(OUTPUTDIR)/$(CLIENTNAME) $(LIBOBJS) $(CLIENTOBJS) $(LDLIB) $(CFLAGS) -fsanitize=address
+buildClientDebug: $(OBJS)
+	@echo "Linking (DEBUG) $(NAME)..."
+	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS) -fsanitize=address
 
 %.o : %.$(EXT)
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) -MD -MP
 
 mkdirs:
 	$(MK) $(OUTPUTDIR)
 
 clean:
 	@echo "Cleaning..."
-	$(RM) $(LIBOBJS) $(CLIENTOBJS)
+	$(RM) $(OBJS)
 
 runClient:
-	@echo "Starting to run $(CLIENTNAME)... "; ./$(OUTPUTDIR)/$(CLIENTNAME)
+	@echo "Starting to run $(NAME)... "; ./$(OUTPUTDIR)/$(NAME)
+
+-include $(OBJS:.o=.d)
