@@ -169,4 +169,5 @@ struct Chunk {
 		_mesh(i, j, k-1, 2, -1, vec);
 		_mesh(i, j, k+1, 2, 1, vec);
 	}
+
 };

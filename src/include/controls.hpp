@@ -8,7 +8,6 @@
 
 #include <SDL2/SDL.h>
 
-
 struct Camera {
 	glm::vec3 pos;
 	glm::vec3 foward;
@@ -55,95 +54,16 @@ static const long long int BS_MAX = (1LL<<31);
 
 namespace Input {
 	enum event {QUIT, PAUSE, TOGGLE_DEBUG, NONE};
-	const int NKEYS = 256;
-	int keys[NKEYS] = {0};
-	int shift = 0;
 };
 
-using namespace Input;
+#define NKEYS 256
 
 struct Controls {
-
-	Controls () {}
-
-	bool IsKeyPressed(SDL_Keycode k) {
-
-		if(SDLK_LSHIFT == k) return shift==1;
-
-		if(k >= NKEYS || k < 0) return false;
-
-		return keys[k]==1;
-	}
-
-	void Input(Camera& cam) {
-		float cam_speed = 0.2f;
-
-		if(IsKeyPressed(SDLK_SPACE)) cam.pos.y += cam_speed;
-		if(IsKeyPressed(SDLK_LSHIFT)) cam.pos.y -= cam_speed;
-		if(IsKeyPressed(SDLK_w)) cam.pos += cam.foward * cam_speed;
-		if(IsKeyPressed(SDLK_s)) cam.pos -= cam.foward * cam_speed;
-		if(IsKeyPressed(SDLK_a)) cam.pos -= cam.Right() * cam_speed;
-		if(IsKeyPressed(SDLK_d)) cam.pos += cam.Right() * cam_speed;
-
-
-		if(IsKeyPressed(SDLK_c)) printf("(%0.2f, %0.2f, %0.2f)\n", cam.pos.x, cam.pos.y, cam.pos.z);
-	}
-
-	event Process(SDL_Event e, Camera& cam) {
-
-		switch (e.type) {
-			case SDL_QUIT: { return QUIT; }
-
-			case SDL_MOUSEMOTION: {
-				int x = e.motion.xrel, y = e.motion.yrel;
-
-				cam.RotateYaw((float)x * -0.1);
-				cam.RotatePitch((float)y * -0.1);
-
-				break;
-			}
-			case SDL_KEYUP: {
-				auto k = e.key.keysym.sym;
-				if(k < NKEYS && k >= 0) {
-					keys[k] = 0;
-				}
-
-				if(k == SDLK_LSHIFT) shift = 0;
-
-				break;
-			}
-			case SDL_KEYDOWN: {
-
-				auto k = e.key.keysym.sym;
-				if(k < NKEYS && k >= 0) {
-					keys[k] = 1;
-				}
-
-				if(k == SDLK_LSHIFT) shift = 1;
-
-				if(k == SDLK_TAB) return TOGGLE_DEBUG;
-				if(k == SDLK_ESCAPE) return QUIT;
-
-				break;
-			}
-			default:
-				return NONE;
-				break;
-		}
-
-
-		return NONE;
-	}
+	int keys[NKEYS];
+	int shift;
+	Controls ();
+	bool IsKeyPressed(SDL_Keycode k);
+	void Input(Camera& cam);
+	Input::event Process(SDL_Event e, Camera& cam);
 
 };
-
-	//std::bitset<BS_MAX> keyboard;
-
-	//void RegUp(unsigned int id) {
-	//	keyboard.set(id);
-	//}
-
-	//void RegDown(unsigned int id) {
-	//	keyboard.reset(id);
-	//}
-
