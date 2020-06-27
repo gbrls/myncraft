@@ -11,6 +11,7 @@ static const float C = 1.0f * (2.0f/4.0f);
 static const float D = 1.0f * (3.0f/4.0f);
 static const float E = 1.0f;
 static const int SZ = 32;
+static const int SZP = SZ+2;
 
 std::vector<float> topFace(float x, float y, float z, bool bottom) {
 	float a=A,b=B,c=C,d=D,e=E;
@@ -60,7 +61,7 @@ std::vector<float> frontFace(float x, float y, float z) {
 
 struct Chunk {
 	char mat[SZ][SZ][SZ];
-	char visited[SZ][SZ][SZ];
+	char visited[SZP][SZP][SZP];
 	int X,Y,Z;
 
 	Chunk (int x, int y , int z) {
@@ -70,9 +71,9 @@ struct Chunk {
 
 		memset(mat, 0, sizeof(mat));
 
-		for(int i=1; i<SZ-1; i++) {
-			for(int j=1; j<SZ-1; j++) {
-				for(int k=1; k<SZ-1; k++) {
+		for(int i=0; i<SZ; i++) {
+			for(int j=0; j<SZ; j++) {
+				for(int k=0; k<SZ; k++) {
 					float prob = perlin.accumulatedOctaveNoise3D((i+X*32)/s, (j+Y*32)/s, (k+Z*32)/s, 2);
 					int x = i - SZ/2, y = j - SZ/2, z = k - SZ/2;
 
@@ -89,14 +90,36 @@ struct Chunk {
 		memset(visited,0,sizeof(visited));
 		std::vector<float> vec;
 
-		_mesh(0, 0, 0, 1, 0, vec);
+		_mesh(-1, -1, -1, 1, 0, vec);
 		printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
 
 		return vec;
 	}
 
 	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
-		if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) return;
+		if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) return;
+
+		if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) {
+
+			auto proc = [](int x) -> int {
+				if(x==-1) return SZ+1;
+				else return x;
+			};
+
+			int ni = proc(i), nj = proc(j), nk = proc(k);
+
+			if(visited[ni][nj][nk] == 1) return;
+			visited[ni][nj][nk]=1;
+
+			_mesh(i-1, j, k, 0, -1, vec);
+			_mesh(i+1, j, k, 0, 1, vec);
+			_mesh(i, j-1, k, 1, -1, vec);
+			_mesh(i, j+1, k, 1, 1, vec);
+			_mesh(i, j, k-1, 2, -1, vec);
+			_mesh(i, j, k+1, 2, 1, vec);
+
+			return;
+		}
 
 		int I = i + X*32, J = j + Y*32, K = k + Z*32;
 

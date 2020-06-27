@@ -1,5 +1,9 @@
+/////////////////////////////////
+// ** GABRIEL SCHNEIDER - 2020 //
+/////////////////////////////////
+
 /*
-** TODO: change GL_TRIANGLES to GL_QUADS
+** TODO: remove wall between chunks
  */
 
 #include <SDL2/SDL.h>
