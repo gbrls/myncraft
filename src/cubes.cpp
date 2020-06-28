@@ -1,6 +1,8 @@
 #include <string.h>
 #include <vector>
 #include <cstdio>
+#include <queue>
+#include <utility>
 
 #include "include/perlin.hpp"
 #include "include/cubes.hpp"
@@ -87,14 +89,14 @@ void Chunk::gen_world_old() {
 
 void Chunk::gen_world() {
 
-	siv::PerlinNoise perlin(123499);
+	siv::PerlinNoise perlin(1232);
 	float s = 70.0f;
 
 	for(int i=0;i<SZ;i++) {
 		for(int j=0;j<SZ;j++) {
 			float H = perlin.accumulatedOctaveNoise2D((i+X*32)/s, (j+Z*32)/s, 2);
 			H += 1;
-			H *= 20;
+			H *= 40;
 
 			for(int k=0;k<SZ;k++) {
 				if((k+Y*32) < H) mat[i][k][j]=1;
@@ -104,6 +106,7 @@ void Chunk::gen_world() {
 
 				//if(i==0 || j==0 || k==0) mat[i][k][j]=1;
 				//if(i== j && j == k) mat[i][k][j]=1;
+
 			}
 		}
 	}
@@ -115,28 +118,111 @@ std::vector<float> Chunk::Mesh() {
 	memset(visited,0,sizeof(visited));
 	std::vector<float> vec;
 
-	_mesh(-1, 0, 0, 1, 0, vec);
+	//_mesh(-1, 0, 0, 1, 0, vec);
+	_mesh_bfs(-1, 0, 0, 0, 0, vec);
 	if(vec.size()>0) printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
 	else printf("Created an empty voxel\n");
 
 	return vec;
 }
 
+void Chunk::_mesh_bfs(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
+	std::queue<std::pair<XYZ, std::pair<int, int>>> q;
+
+	q.push({{i,j,k}, {id, sig}});
+
+	auto proc = [](int x) -> int {
+		if(x==-1) return SZ+1;
+		else return x;
+	};
+
+	while(!q.empty()) {
+		i = q.front().first.x, j = q.front().first.y, k = q.front().first.z;
+		id = q.front().second.first, sig = q.front().second.second;
+
+
+		q.pop();
+
+		//printf("%d, %d, %d\n", i,j,k);
+
+		if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) continue;
+
+		int ni = proc(i), nj = proc(j), nk = proc(k);
+
+
+		if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) {
+
+			if(visited[ni][nj][nk] == 1) continue;
+			visited[ni][nj][nk]=1;
+
+			q.push({{i-1, j, k},{ 0, -1}});
+			q.push({{i+1, j, k},{0, 1}});
+			q.push({{i, j-1, k},{1, -1}});
+
+			q.push({{i, j+1, k},{1, 1}});
+			q.push({{i, j, k-1},{ 2, -1}});
+			q.push({{i, j, k+1},{2, 1}});
+
+			continue;
+		}
+
+
+		int I = i + X*32, J = j + Y*32, K = k + Z*32;
+
+		if(mat[i][j][k]==1) {
+			std::vector<float> v;
+
+			if(id==1 && sig == 1) {
+				v = topFace(I, J-1, K, true);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			if(id==1 && sig == -1) {
+				v = topFace(I, J, K, false);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			if(id==0 && sig == 1) {
+				v = sideFace(I, J, K);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			if(id==0 && sig == -1) {
+				v = sideFace(I+1, J, K);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			if(id==2 && sig == -1) {
+				v = frontFace(I, J, K);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			if(id==2 && sig == 1) {
+				v = frontFace(I, J, K-1);
+				vec.insert(vec.end(), v.begin(), v.end());
+			}
+
+			continue;
+		}
+
+		if(visited[ni][nj][nk] == 1) continue;
+		visited[ni][nj][nk]=1;
+
+		q.push({{i-1, j, k},{ 0, -1}});
+		q.push({{i+1, j, k},{0, 1}});
+		q.push({{i, j-1, k},{1, -1}});
+
+		q.push({{i, j+1, k},{1, 1}});
+		q.push({{i, j, k-1},{ 2, -1}});
+		q.push({{i, j, k+1},{2, 1}});
+	}
+}
+
 void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
 
-	//if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) return;
 	if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) return;
 
-	//printf("(%d, %d, %d)\n",i,j,k);
-
-	//(12, 13, 24)
-	//(13, 14, 23)
-	//(14, 13, 23)
-	//(14, 13, 23)
-
 	if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) {
-
-		//puts("OUTSIDE");
 
 		auto proc = [](int x) -> int {
 			if(x==-1) return SZ+1;
@@ -145,11 +231,8 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 
 		int ni = proc(i), nj = proc(j), nk = proc(k);
 
-
-		//puts("Checking visited");
 		if(visited[ni][nj][nk] == 1) return;
 		visited[ni][nj][nk]=1;
-		//puts("Visited checked");
 
 		_mesh(i-1, j, k, 0, -1, vec);
 		_mesh(i+1, j, k, 0, 1, vec);
@@ -199,11 +282,8 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 		return;
 	}
 
-	//puts("Checking visited");
 	if(visited[i][j][k] == 1) return;
 	visited[i][j][k]=1;
-
-	//puts("visited checked");
 
 	_mesh(i-1, j, k, 0, -1, vec);
 	_mesh(i+1, j, k, 0, 1, vec);

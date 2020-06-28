@@ -11,6 +11,10 @@
 // szp = sz + 2
 #define SZP 34
 
+struct XYZ {
+	int x,y,z;
+};
+
 struct Chunk {
 	char mat[SZ][SZ][SZ];
 	char visited[SZP][SZP][SZP];
@@ -24,6 +28,7 @@ struct Chunk {
 	// a dfs like function
 	std::vector<float> Mesh();
 	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec);
+	void _mesh_bfs(int i, int j, int k, int id, int sig, std::vector<float>& vec);
 	GLuint Vao(Context& ctx);
 
 	void gen_world_old();

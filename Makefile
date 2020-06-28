@@ -23,7 +23,7 @@ OBJS := $(subst .$(EXT),.o,$(SRC))
 
 all: mkdirs buildClient runClient
 
-debug: mkdirs buildClientDebug clean runClient
+debug: mkdirs buildClientDebug runClient
 
 game: mkdirs buildClient clean runClient
 
