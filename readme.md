@@ -1,7 +1,7 @@
 # Running
 
-Make sure you have SDL2 installed.
-`make all`
+Make sure you have SDL2 installed.  
+Cd the root project folder and then `make all`.
 
 # Progress
 I usually write my code by expanding upon smaller functional iterations, so it's easy to document.
