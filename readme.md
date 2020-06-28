@@ -18,6 +18,8 @@ During this day I worked mostly on camera controls and projections, so the graph
 - Day 3.  
 I worked on mesh generation with a DFS to mesh only the visible faces.
 
-- Day 4.  
-I changed the project structure a little bit and started messing around with terrain generation.
-![](screenshots/day4.jpg)
+- [Day 4](https://github.com/gbrls/myncraft/tree/13989dc41ad2b0b874482c4888649fb4aaf86e07)  
+I changed the project structure a little bit and started messing around with terrain generation.  
+![](screenshots/day4.jpg)  
+![](screenshots/day4-mesh.jpg)  
+Efficient mesh generation, but it's worse than greedy meshing.
