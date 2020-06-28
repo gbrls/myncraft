@@ -16,46 +16,43 @@ std::vector<float> topFace(float x, float y, float z, bool bottom) {
 	float a=A,b=B,c=C,d=D,e=E;
 	if(bottom) a = c, b = d;
 
-	//e*=10;
 	return {
-	-0.5f+x, 0.5f+y, 0.5f+z, a, a,
-	-0.5f+x, 0.5f+y, -0.5f+z, a, e,
-	0.5f+x, 0.5f+y, 0.5f+z, b, a,
+		-0.5f+x, 0.5f+y, 0.5f+z, a, a,
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a,
 
-	-0.5f+x, 0.5f+y, -0.5f+z, a, e,
-	0.5f+x, 0.5f+y, -0.5f+z, b, e,
-	0.5f+x, 0.5f+y, 0.5f+z, b, a
-};
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e,
+		0.5f+x, 0.5f+y, -0.5f+z, b, e,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a
+	};
 }
 
 std::vector<float> sideFace(float x, float y, float z) {
 	float a=A,b=B,c=C,e=E;
 
-	//e*=10;
 	return {
-	-0.5f+x, -0.5f+y, -0.5f+z, b, e,
-	-0.5f+x, 0.5f+y, -0.5f+z, b, a,
-	-0.5f+x, -0.5f+y, 0.5f+z, c, e,
+		-0.5f+x, -0.5f+y, -0.5f+z, b, e,
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e,
 
-	-0.5f+x, 0.5f+y, -0.5f+z, b, a,
-	-0.5f+x, 0.5f+y, 0.5f+z, c, a,
-	-0.5f+x, -0.5f+y, 0.5f+z, c, e
-};
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a,
+		-0.5f+x, 0.5f+y, 0.5f+z, c, a,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e
+	};
 }
 
 std::vector<float> frontFace(float x, float y, float z) {
 	float a=A,b=B,c=C,e=E;
 
-	//e*=10;
 	return {
-	-0.5f+x, -0.5f+y, 0.5f+z, b, e,
-	-0.5f+x, 0.5f+y, 0.5f+z, b, a,
-	0.5f+x, -0.5f+y, 0.5f+z, c, e,
+		-0.5f+x, -0.5f+y, 0.5f+z, b, e,
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e,
 
-	-0.5f+x, 0.5f+y, 0.5f+z, b, a,
-	0.5f+x, 0.5f+y, 0.5f+z, c, a,
-	0.5f+x, -0.5f+y, 0.5f+z, c, e
-};
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a,
+		0.5f+x, 0.5f+y, 0.5f+z, c, a,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e
+	};
 }
 
 
@@ -64,14 +61,14 @@ Chunk::Chunk (int x, int y , int z) {
 	memset(mat, 0, sizeof(mat));
 	cache.first = false;
 
-	gen_world_old();
-	//gen_world();
+	//gen_world_old();
+	gen_world();
 	printf("Chunk(%d, %d, %d) generated\n", x,y,z);
 }
 
 void Chunk::gen_world_old() {
 
-	siv::PerlinNoise perlin(999999);
+	siv::PerlinNoise perlin(9999);
 	float s = 25.0f;
 
 	for(int i=0; i<SZ; i++) {
@@ -97,16 +94,16 @@ void Chunk::gen_world() {
 		for(int j=0;j<SZ;j++) {
 			float H = perlin.accumulatedOctaveNoise2D((i+X*32)/s, (j+Z*32)/s, 2);
 			H += 1;
-			H *= 30;
+			H *= 20;
 
 			for(int k=0;k<SZ;k++) {
-				//if((k+Y*32) < H) mat[i][k][j]=1;
+				if((k+Y*32) < H) mat[i][k][j]=1;
 				//
 				//int yrel = k + (Y*8);
-				mat[i][k][j]=0;
+				//mat[i][k][j]=0;
 
-				if(i==0 || j==0 || k==0) mat[i][k][j]=1;
-				if(i== j && j == k) mat[i][k][j]=1;
+				//if(i==0 || j==0 || k==0) mat[i][k][j]=1;
+				//if(i== j && j == k) mat[i][k][j]=1;
 			}
 		}
 	}
@@ -126,6 +123,8 @@ std::vector<float> Chunk::Mesh() {
 }
 
 void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
+
+	//if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) return;
 	if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) return;
 
 	//printf("(%d, %d, %d)\n",i,j,k);

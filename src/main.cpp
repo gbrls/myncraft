@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 	vector<Chunk> chunks;
 	for(int i=0;i<8;i++) {
 		for(int j=0;j<8;j++) {
-			for(int k=0;k<3;k++) {
+			for(int k=0;k<1;k++) {
 				chunks.push_back(Chunk(i,k,j));
 			}
 		}
