@@ -26,4 +26,7 @@ struct Chunk {
 	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec);
 	GLuint Vao(Context& ctx);
 
+	void gen_world_old();
+	void gen_world();
+
 };

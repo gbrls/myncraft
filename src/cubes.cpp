@@ -1,5 +1,6 @@
 #include <string.h>
 #include <vector>
+#include <cstdio>
 
 #include "include/perlin.hpp"
 #include "include/cubes.hpp"
@@ -60,12 +61,18 @@ std::vector<float> frontFace(float x, float y, float z) {
 
 Chunk::Chunk (int x, int y , int z) {
 	X=x,Y=y,Z=z;
-	siv::PerlinNoise perlin(1292);
-	float s = 25.0f;
-
 	memset(mat, 0, sizeof(mat));
-
 	cache.first = false;
+
+	gen_world_old();
+	//gen_world();
+	printf("Chunk(%d, %d, %d) generated\n", x,y,z);
+}
+
+void Chunk::gen_world_old() {
+
+	siv::PerlinNoise perlin(999999);
+	float s = 25.0f;
 
 	for(int i=0; i<SZ; i++) {
 		for(int j=0; j<SZ; j++) {
@@ -75,10 +82,35 @@ Chunk::Chunk (int x, int y , int z) {
 
 				mat[i][j][k] = 1;
 				//if((x*x)+(y*y)+(z*z) > 200) mat[i][j][k] = 0;
-				if(prob < -0.2) mat[i][j][k]=0;
+				if(prob < -0.1) mat[i][j][k]=0;
 			}
 		}
 	}
+}
+
+void Chunk::gen_world() {
+
+	siv::PerlinNoise perlin(123499);
+	float s = 70.0f;
+
+	for(int i=0;i<SZ;i++) {
+		for(int j=0;j<SZ;j++) {
+			float H = perlin.accumulatedOctaveNoise2D((i+X*32)/s, (j+Z*32)/s, 2);
+			H += 1;
+			H *= 30;
+
+			for(int k=0;k<SZ;k++) {
+				//if((k+Y*32) < H) mat[i][k][j]=1;
+				//
+				//int yrel = k + (Y*8);
+				mat[i][k][j]=0;
+
+				if(i==0 || j==0 || k==0) mat[i][k][j]=1;
+				if(i== j && j == k) mat[i][k][j]=1;
+			}
+		}
+	}
+
 }
 
 // a dfs like function
@@ -86,8 +118,9 @@ std::vector<float> Chunk::Mesh() {
 	memset(visited,0,sizeof(visited));
 	std::vector<float> vec;
 
-	_mesh(-1, -1, -1, 1, 0, vec);
-	printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
+	_mesh(-1, 0, 0, 1, 0, vec);
+	if(vec.size()>0) printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
+	else printf("Created an empty voxel\n");
 
 	return vec;
 }
@@ -95,7 +128,16 @@ std::vector<float> Chunk::Mesh() {
 void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
 	if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) return;
 
+	//printf("(%d, %d, %d)\n",i,j,k);
+
+	//(12, 13, 24)
+	//(13, 14, 23)
+	//(14, 13, 23)
+	//(14, 13, 23)
+
 	if(i < 0 || j < 0 || k < 0 || i >= SZ || j >= SZ || k >= SZ) {
+
+		//puts("OUTSIDE");
 
 		auto proc = [](int x) -> int {
 			if(x==-1) return SZ+1;
@@ -104,8 +146,11 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 
 		int ni = proc(i), nj = proc(j), nk = proc(k);
 
+
+		//puts("Checking visited");
 		if(visited[ni][nj][nk] == 1) return;
 		visited[ni][nj][nk]=1;
+		//puts("Visited checked");
 
 		_mesh(i-1, j, k, 0, -1, vec);
 		_mesh(i+1, j, k, 0, 1, vec);
@@ -155,8 +200,11 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 		return;
 	}
 
+	//puts("Checking visited");
 	if(visited[i][j][k] == 1) return;
 	visited[i][j][k]=1;
+
+	//puts("visited checked");
 
 	_mesh(i-1, j, k, 0, -1, vec);
 	_mesh(i+1, j, k, 0, 1, vec);
@@ -169,6 +217,7 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 GLuint Chunk::Vao(Context& ctx) {
 	if(cache.first == false) {
 
+		printf("Creating mesh for (%d, %d, %d)\n", X, Y, Z);
 		std::vector<float> mesh = Mesh();
 		cache.second = ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 		nvert = mesh.size()/5; // x,y,z,u,v
