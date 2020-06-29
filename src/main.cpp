@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
 	ctx.setUniformFloat(0.0f, (char*)"percentage");
 
-	ctx.loadTexture((char*)"./assets/block.jpg", (char*)"texBlock");
+	ctx.loadTexture((char*)"./assets/block_my_0.png", (char*)"texBlock");
 
 	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	vector<Chunk> chunks;

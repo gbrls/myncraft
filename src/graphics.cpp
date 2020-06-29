@@ -215,14 +215,14 @@ void Context::setUniformFloat(float f, char* name) {
 
 void Context::loadTexture(char* file, char* name) {
 	int width, height, nchannels;
-	unsigned char* data = stbi_load(file, &width, &height, &nchannels,0);
+	unsigned char* data = stbi_load(file, &width, &height, &nchannels, STBI_rgb_alpha);
 
 	if(data==NULL) {
-		puts("Image doesn't exist");
+		printf("The image (%s) does not exist\n", file);
 		exit(-1);
 	}
 
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE, data);
 
 	stbi_image_free(data);
 	glUniform1i(glGetUniformLocation(CurShader(), name), 0);
