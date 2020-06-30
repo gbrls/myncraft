@@ -1,6 +1,6 @@
 # Running
 
-Make sure you have SDL2 development libraries installed and then run the command bellow.
+Make sure you have SDL2 development libraries installed and then run the command bellow.   
 `git clone "https://github.com/gbrls/myncraft/" && cd myncraft && make all`
 
 # Progress
