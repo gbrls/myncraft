@@ -69,13 +69,13 @@ Context::Context (int _w, int _h, char* title) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D,texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glBindTexture(GL_TEXTURE_2D,texture);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 }
 
@@ -234,34 +234,55 @@ void Context::loadTexture(char* file, char* name) {
 void Context::loadTexArray(char* file, int index) {
 
 
+	unsigned int texturewidth = 2;        // must be constant for all layers
+	unsigned int textureheight = 3;    // must be constant for all layers
+	unsigned int layers = 4;
+	unsigned char texturedata_layer0[] = {
+		// 1st layer (red / cyan)
+		0x50, 0x00, 0x00, 0xFF,        0x00, 0x50, 0x50, 0xFF,
+		0xA0, 0x00, 0x00, 0xFF,        0x00, 0xA0, 0xA0, 0xFF,
+		0xFF, 0x00, 0x00, 0xFF,        0x00, 0xFF, 0xFF, 0xFF,
+	};
+	unsigned char texturedata_layer1[] = {
+		// 2nd layer (green / magenta)
+		0x00, 0x50, 0x00, 0xFF,        0x50, 0x00, 0x50, 0xFF,
+		0x00, 0xA0, 0x00, 0xFF,        0xA0, 0x00, 0xA0, 0xFF,
+		0x00, 0xFF, 0x00, 0xFF,        0xFF, 0x00, 0xFF, 0xFF,
+	};
+	unsigned char texturedata_layer2[] = {
+		// 3rd layer (blue / yellow)
+		0x00, 0x00, 0x50, 0xFF,        0x50, 0x50, 0x00, 0xFF,
+		0x00, 0x00, 0xA0, 0xFF,        0xA0, 0xA0, 0x00, 0xFF,
+		0x00, 0x00, 0xFF, 0xFF,        0xFF, 0xFF, 0x00, 0xFF,
+	};
+	unsigned char texturedata_layer3[] = {
+		// 4th layer (black / grey / white)
+		0x00, 0x00, 0x00, 0xFF,        0x30, 0x30, 0x30, 0xFF,
+		0x60, 0x60, 0x60, 0xFF,        0x90, 0x90, 0x90, 0xFF,
+		0xB0, 0xB0, 0xB0, 0xFF,        0xFF, 0xFF, 0xFF, 0xFF,
+	};
 
-	int width, height, nchannels;
-	unsigned char* data = stbi_load(file, &width, &height, &nchannels, STBI_rgb_alpha);
-
-	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-
-	//glTexStorage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, 16*4, 16, 3); // allocating space for the texture
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, 1); // allocating space for the texture
-
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	// allocate memory for all layers:
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, texturewidth, textureheight, layers);
+	// set each 2D texture layer separately:
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, texturewidth, textureheight, 1, GL_RGBA, GL_UNSIGNED_BYTE, texturedata_layer0);
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 1, texturewidth, textureheight, 1, GL_RGBA, GL_UNSIGNED_BYTE, texturedata_layer1);
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 2, texturewidth, textureheight, 1, GL_RGBA, GL_UNSIGNED_BYTE, texturedata_layer2);
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 3, texturewidth, textureheight, 1, GL_RGBA, GL_UNSIGNED_BYTE, texturedata_layer3);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 
-	unsigned int texture_unit = 2;
-	int location = glGetUniformLocation(CurShader(), "texArray");
-	glProgramUniform1i(CurShader(), location, texture_unit);
-	glBindTextureUnit(texture_unit, texArray);
 
-	//if(data==NULL) {
-	//	printf("The image (%s) does not exist\n", file);
-	//	exit(-1);
-	//}
-	////                                            index
+	// connect texture to sampler in fragmentshader
+	unsigned int texture_unit = 2;
+	int location = glGetUniformLocation(CurShader(), "tex1");
+	glProgramUniform1i(CurShader(), location, texture_unit);
+	glBindTextureUnit(texture_unit, texture);
+
 	//glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, index, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	//stbi_image_free(data);
