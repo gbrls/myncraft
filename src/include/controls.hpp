@@ -36,6 +36,6 @@ struct Controls {
 	Controls ();
 	bool IsKeyPressed(SDL_Keycode k);
 	void Input(Camera& cam);
-	Input::event Process(SDL_Event e, Camera& cam);
+	Input::event Process(SDL_Event e, Camera& cam, bool paused);
 
 };

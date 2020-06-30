@@ -4,7 +4,8 @@
 
 /*
 ** TODO: remove wall between chunks
-** TODO: segfault when the chunk is empty
+** TODO: tree leafs get cut by chunk borders
+** TODO: fix rendering order to allow good alpha blending
  */
 
 #include <SDL2/SDL.h>
@@ -69,8 +70,8 @@ int main(int argc, char *argv[]) {
 
 	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	vector<Chunk> chunks;
-	for(int i=0;i<2;i++) {
-		for(int j=0;j<2;j++) {
+	for(int i=0;i<10;i++) {
+		for(int j=0;j<10;j++) {
 			for(int k=0;k<3;k++) {
 				chunks.push_back(Chunk(i,k,j));
 			}
@@ -78,7 +79,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	auto fun = [&ctx, &chunks]() -> void {
-
 		for(Chunk& c : chunks) {
 			glBindVertexArray(c.Vao(ctx));
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);

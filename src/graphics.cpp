@@ -41,7 +41,7 @@ GLuint createShader(GLenum shaderType, std::string& str_source) {
 
 Context::Context (int _w, int _h, char* title) {
 	w = _w, h = _h;
-	running = true;
+	running = true, paused = false;
 	last_draw=0, last_update=0;
 	debug=0, cur_shader=0;
 	window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -91,7 +91,7 @@ void Context::update(Camera& cam, Controls& ctrl) {
 
 
 	while(SDL_PollEvent(&e)) {
-		switch (ctrl.Process(e, cam)) {
+		switch (ctrl.Process(e, cam, paused)) {
 			case Input::QUIT:
 				running = 0;
 				break;
@@ -101,12 +101,16 @@ void Context::update(Camera& cam, Controls& ctrl) {
 				if(debug) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 				else glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 				break;
+			case Input::PAUSE:
+				paused = !paused;
+				SDL_SetRelativeMouseMode(paused?SDL_FALSE:SDL_TRUE);
+				break;
 			default:
 				break;
 		}
 	}
 
-	ctrl.Input(cam);
+	if(!paused) ctrl.Input(cam);
 
 	last_update = SDL_GetTicks();
 }
@@ -200,11 +204,11 @@ GLuint Context::loadMeshUV(float* vert, int vsz) {
 
 	GLint posAttrib = glGetAttribLocation(CurShader(), "position");
 	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,6*sizeof(float),0);
 
 	GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
 	glEnableVertexAttribArray(coordAttrib);
-	glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+	glVertexAttribPointer(coordAttrib, 3, GL_FLOAT, GL_FALSE,6*sizeof(float),(void*)(3*sizeof(float)));
 
 	return vao;
 }

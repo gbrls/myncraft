@@ -67,16 +67,18 @@ void Controls::Input(Camera& cam) {
 	if(IsKeyPressed(SDLK_c)) printf("(%0.2f, %0.2f, %0.2f)\n", cam.pos.x, cam.pos.y, cam.pos.z);
 }
 
-Input::event Controls::Process(SDL_Event e, Camera& cam) {
+Input::event Controls::Process(SDL_Event e, Camera& cam, bool paused) {
 
 	switch (e.type) {
 		case SDL_QUIT: { return Input::QUIT; }
 
 		case SDL_MOUSEMOTION: {
-			int x = e.motion.xrel, y = e.motion.yrel;
+			if(!paused) {
+				int x = e.motion.xrel, y = e.motion.yrel;
 
-			cam.RotateYaw((float)x * -0.1);
-			cam.RotatePitch((float)y * -0.1);
+				cam.RotateYaw((float)x * -0.1);
+				cam.RotatePitch((float)y * -0.1);
+			}
 
 			break;
 		}
@@ -101,6 +103,7 @@ Input::event Controls::Process(SDL_Event e, Camera& cam) {
 
 			if(k == SDLK_TAB) return Input::TOGGLE_DEBUG;
 			if(k == SDLK_ESCAPE) return Input::QUIT;
+			if(k == SDLK_p) return Input::PAUSE;
 
 			break;
 		}

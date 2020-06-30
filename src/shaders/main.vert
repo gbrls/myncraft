@@ -1,10 +1,10 @@
 #version 450 core
 
 in vec3 position;
-in vec2 texcoord;
+in vec3 texcoord;
 
 out vec3 Color;
-out vec2 TexCoord;
+out vec3 TexCoord;
 
 uniform mat4 view;
 uniform mat4 proj;

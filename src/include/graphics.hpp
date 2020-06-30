@@ -23,7 +23,7 @@ struct Context {
 	int cur_shader;
 
 	int w, h;
-	bool running;
+	bool running, paused;
 	unsigned int last_draw, last_update;
 	int debug;
 
