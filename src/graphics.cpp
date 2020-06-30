@@ -63,6 +63,10 @@ Context::Context (int _w, int _h, char* title) {
 	glewExperimental = GL_TRUE;
 	glewInit();
 
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable(GL_DEPTH_TEST);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -72,6 +76,7 @@ Context::Context (int _w, int _h, char* title) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 }
 
 
@@ -110,8 +115,6 @@ void Context::draw(Camera cam, const std::function <void ()>& f) {
 	setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
 
 	float t = (float)SDL_GetTicks()/1000.0f;
-
-	//setUniformMatrix(glm::rotate(glm::mat4(1.0f), t, glm::vec3(0.0, 1, 0)), (char*)"model");
 
 	glViewport(0,0,w,h);
 	glClearColor(0.1f,0.2f,0.4f,1.0f);
@@ -226,4 +229,48 @@ void Context::loadTexture(char* file, char* name) {
 
 	stbi_image_free(data);
 	glUniform1i(glGetUniformLocation(CurShader(), name), 0);
+}
+
+void Context::loadTexArray(char* file, int index) {
+
+
+
+	int width, height, nchannels;
+	unsigned char* data = stbi_load(file, &width, &height, &nchannels, STBI_rgb_alpha);
+
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+
+	//glTexStorage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, 16*4, 16, 3); // allocating space for the texture
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, 1); // allocating space for the texture
+
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
+	unsigned int texture_unit = 2;
+	int location = glGetUniformLocation(CurShader(), "texArray");
+	glProgramUniform1i(CurShader(), location, texture_unit);
+	glBindTextureUnit(texture_unit, texArray);
+
+	//if(data==NULL) {
+	//	printf("The image (%s) does not exist\n", file);
+	//	exit(-1);
+	//}
+	////                                            index
+	//glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, index, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	//stbi_image_free(data);
+
+	//GLubyte texels[] =
+	//	{255, 0, 0, 255,
+	//	 0, 255, 0, 255,
+	//	 0, 0, 255, 255};
+
+	//glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, 1, 1, 3, GL_RGBA, GL_UNSIGNED_BYTE, texels);
+	//glUniform1i(glGetUniformLocation(CurShader(), "texArray"), 0);
 }

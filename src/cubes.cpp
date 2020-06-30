@@ -141,7 +141,10 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 
 		int I = i + X*32, J = j + Y*32, K = k + Z*32;
 
-		if(mat[i][j][k]==1) {
+		if(mat[i][j][k]>0) {
+
+			int texture_id = mat[i][j][k];
+
 			std::vector<float> v;
 
 			if(id==1 && sig == 1) {

@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 
 	int w = 1400, h = 900;
 
-	Context ctx = Context(w, h, (char*)"Hello OpenGL");
+	Context ctx = Context(w, h, (char*)"Myncraft");
 
 	string vert = read_file((char*)"./src/shaders/main.vert");
 	string frag = read_file((char*)"./src/shaders/main.frag");
@@ -60,12 +60,14 @@ int main(int argc, char *argv[]) {
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
 	ctx.setUniformFloat(0.0f, (char*)"percentage");
 
-	ctx.loadTexture((char*)"./assets/block_my_0.png", (char*)"texBlock");
+	//ctx.loadTexture((char*)"./assets/block_my_0.png", (char*)"texBlock");
+	ctx.loadTexture((char*)"./assets/wook_my_0.png", (char*)"texBlock");
+	//ctx.loadTexArray((char*)"./assets/wook_my_0.png", 0);
 
 	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	vector<Chunk> chunks;
-	for(int i=0;i<8;i++) {
-		for(int j=0;j<8;j++) {
+	for(int i=0;i<2;i++) {
+		for(int j=0;j<2;j++) {
 			for(int k=0;k<3;k++) {
 				chunks.push_back(Chunk(i,k,j));
 			}
@@ -80,8 +82,11 @@ int main(int argc, char *argv[]) {
 		}
 	};
 
-	SDL_Event event;
+	GLenum err;
 	while(ctx.running) {
+		while((err = glGetError()) != GL_NO_ERROR) {
+			printf("%x\n", err);
+		}
 
 		ctx.update(cam, ctrl);
 		ctx.draw(cam, fun);

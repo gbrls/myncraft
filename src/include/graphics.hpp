@@ -17,7 +17,7 @@ struct Context {
 	SDL_Window* window;
 	SDL_GLContext context;
 
-	GLuint shaderProgram, shaderFrag, shaderVert, texture;
+	GLuint shaderProgram, shaderFrag, shaderVert, texture, texArray;
 
 	std::vector<GLuint> shaders;
 	int cur_shader;
@@ -37,5 +37,7 @@ struct Context {
 	GLuint loadMeshUV(float* vert, int vsz);
 	void setUniformMatrix(glm::mat4 mat, char* name);
 	void setUniformFloat(float f, char* name);
+
+	void loadTexArray(char* file, int index);
 	void loadTexture(char* file, char* name);
 };
