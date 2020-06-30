@@ -16,46 +16,46 @@ static const float C = 1.0f * (2.0f/4.0f);
 static const float D = 1.0f * (3.0f/4.0f);
 static const float E = 1.0f;
 
-std::vector<float> topFace(float x, float y, float z, bool bottom, float idx) {
+std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, float n) {
 	float a=A,b=B,c=C,d=D,e=E;
 	if(bottom) a = c, b = d;
 
 	return {
-		-0.5f+x, 0.5f+y, 0.5f+z, a, a, idx,
-		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx,
-		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx,
+		-0.5f+x, 0.5f+y, 0.5f+z, a, a, idx, n,
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
 
-		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx,
-		0.5f+x, 0.5f+y, -0.5f+z, b, e, idx,
-		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n,
+		0.5f+x, 0.5f+y, -0.5f+z, b, e, idx, n,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n
 	};
 }
 
-std::vector<float> sideFace(float x, float y, float z, float idx) {
+std::vector<float> sideFace(float x, float y, float z, float idx, float n) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
-		-0.5f+x, -0.5f+y, -0.5f+z, b, e, idx,
-		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx,
-		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx,
+		-0.5f+x, -0.5f+y, -0.5f+z, b, e, idx, n,
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n,
 
-		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx,
-		-0.5f+x, 0.5f+y, 0.5f+z, c, a, idx,
-		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n,
+		-0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n
 	};
 }
 
-std::vector<float> frontFace(float x, float y, float z, float idx) {
+std::vector<float> frontFace(float x, float y, float z, float idx, float n) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
-		-0.5f+x, -0.5f+y, 0.5f+z, b, e, idx,
-		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx,
-		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx,
+		-0.5f+x, -0.5f+y, 0.5f+z, b, e, idx, n,
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n,
 
-		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx,
-		0.5f+x, 0.5f+y, 0.5f+z, c, a, idx,
-		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
+		0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n
 	};
 }
 
@@ -86,7 +86,7 @@ int tree(float _seed) {
 
 void Chunk::gen_world() {
 
-	siv::PerlinNoise perlin(15234523);
+	siv::PerlinNoise perlin(1124203071);
 	float s = 200.0f;
 
 	for(int i=0;i<SZ;i++) {
@@ -189,32 +189,38 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 			float idx = mat[i][j][k]-1;
 
 			if(id==1 && sig == 1) {
-				v = topFace(I, J-1, K, true, idx);
+				// bottom
+				v = topFace(I, J-1, K, true, idx, 5);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==1 && sig == -1) {
-				v = topFace(I, J, K, false, idx);
+				// top
+				v = topFace(I, J, K, false, idx, 4);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == 1) {
-				v = sideFace(I, J, K, idx);
+				// left
+				v = sideFace(I, J, K, idx, 1);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == -1) {
-				v = sideFace(I+1, J, K, idx);
+				// right
+				v = sideFace(I+1, J, K, idx, 3);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == -1) {
-				v = frontFace(I, J, K, idx);
+				// front
+				v = frontFace(I, J, K, idx, 0);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == 1) {
-				v = frontFace(I, J, K-1, idx);
+				//back
+				v = frontFace(I, J, K-1, idx, 1);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
@@ -240,7 +246,7 @@ GLuint Chunk::Vao(Context& ctx) {
 		printf("Creating mesh for (%d, %d, %d)\n", X, Y, Z);
 		std::vector<float> mesh = Mesh();
 		cache.second = ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
-		nvert = mesh.size()/6; // x,y,z,u,v
+		nvert = mesh.size()/7; // x,y,z,u,v
 
 		cache.first = true;
 	}

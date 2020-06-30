@@ -1,10 +1,12 @@
 #version 450 core
 
-in vec3 position;
-in vec3 texcoord;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 texcoord;
+layout (location = 2) in float normal;
 
 out vec3 Color;
 out vec3 TexCoord;
+out float Normal;
 
 uniform mat4 view;
 uniform mat4 proj;
@@ -13,6 +15,7 @@ uniform mat4 model;
 void main() {
     gl_Position = proj * view * model * vec4(position, 1.0);
     TexCoord = texcoord;
+    Normal = normal;
 }
 
 //

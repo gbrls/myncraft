@@ -5,6 +5,10 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 
@@ -177,13 +181,14 @@ void Context::loadMeshUVWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
 	glGenVertexArrays(1,&vao);
 	glBindVertexArray(vao);
 
-	GLint posAttrib = glGetAttribLocation(CurShader(), "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,7*sizeof(float),0);
+	glEnableVertexAttribArray(0);
 
-	GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
-	glEnableVertexAttribArray(coordAttrib);
-	glVertexAttribPointer(coordAttrib, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,7*sizeof(float),(void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,7*sizeof(float),(void*)(6*sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	GLuint ebo;
 	glGenBuffers(1, &ebo);
@@ -202,13 +207,14 @@ GLuint Context::loadMeshUV(float* vert, int vsz) {
 	glGenVertexArrays(1,&vao);
 	glBindVertexArray(vao);
 
-	GLint posAttrib = glGetAttribLocation(CurShader(), "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,6*sizeof(float),0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,7*sizeof(float),0);
+	glEnableVertexAttribArray(0);
 
-	GLint coordAttrib = glGetAttribLocation(CurShader(), "texcoord");
-	glEnableVertexAttribArray(coordAttrib);
-	glVertexAttribPointer(coordAttrib, 3, GL_FLOAT, GL_FALSE,6*sizeof(float),(void*)(3*sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,7*sizeof(float),(void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,7*sizeof(float),(void*)(6*sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	return vao;
 }
@@ -221,6 +227,10 @@ void Context::setUniformMatrix(glm::mat4 mat, char* name) {
 void Context::setUniformFloat(float f, char* name) {
 	GLint pos = glGetUniformLocation(CurShader(), name);
 	glUniform1f(pos, f);
+}
+
+void Context::setUniformVec3(glm::vec3 vec, char* name) {
+
 }
 
 void Context::loadTexture(char* file, char* name) {

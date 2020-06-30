@@ -61,15 +61,12 @@ int main(int argc, char *argv[]) {
 	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
 	ctx.setUniformFloat(0.0f, (char*)"percentage");
 
-	//ctx.loadTexture((char*)"./assets/block_my_0.png", (char*)"texBlock");
-	//ctx.loadTexture((char*)"./assets/wook_my_0.png", (char*)"texBlock");
-
-	ctx.loadTexArray((char*)"./assets/block_my_0.png", 0);
+	ctx.loadTexArray((char*)"./assets/block.png", 0);
 	ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
 	ctx.loadTexArray((char*)"./assets/leaves.png", 2);
 
-	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	vector<Chunk> chunks;
+
 	for(int i=0;i<10;i++) {
 		for(int j=0;j<10;j++) {
 			for(int k=0;k<3;k++) {
