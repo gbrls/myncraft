@@ -22,4 +22,12 @@ I worked on mesh generation with a DFS to mesh only the visible faces.
 I changed the project structure a little bit and started messing around with terrain generation.  
 ![](screenshots/day4.jpg)  
 ![](screenshots/day4-mesh.jpg)  
-Efficient mesh generation, but it's worse than greedy meshing.
+Efficient mesh generation, but it's worse than greedy meshing.  
+
+- [Day 5](https://github.com/gbrls/myncraft/tree/41265aacc674c7665069df5608533dee03ffbcdc)  
+I implemented a texture array, instead of a single texture.  
+A simple pause was implemented in order to take screenshots.  
+A simple tree generation algorithm was implemented, currently the trees cannot occupy multiple chunks, this is a problem.
+![](screenshots/day5.jpg)  
+
+
