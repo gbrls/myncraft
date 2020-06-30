@@ -15,8 +15,13 @@ struct XYZ {
 	int x,y,z;
 };
 
+struct Voxel {
+	unsigned char type;
+	unsigned char light; // 0 - 10
+};
+
 struct Chunk {
-	char mat[SZ][SZ][SZ];
+	Voxel mat[SZ][SZ][SZ];
 	char visited[SZP][SZP][SZP];
 	int X,Y,Z;
 
@@ -30,5 +35,6 @@ struct Chunk {
 	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec);
 	GLuint Vao(Context& ctx);
 
-	void gen_world();
+	void gen_terrain();
+	void bake_light();
 };

@@ -2,6 +2,7 @@
 
 in vec3 TexCoord;
 in float Normal;
+in float Light;
 out vec4 outColor;
 
 uniform sampler2DArray tex1;
@@ -13,7 +14,7 @@ void main() {
     vec4 shadow = vec4(0.0, 0.0, 0.0, 1.0);
 
     vec3 norm = vec3(1, 0, 0);
-    vec3 sun = normalize(vec3(0.2, -1, 0.5));
+    vec3 sun = normalize(vec3(0.3, -1, 0.1));
 
     float n = Normal;
 
@@ -37,7 +38,12 @@ void main() {
 
     vec4 idx_color = texture(tex1, TexCoord);
     idx_color = mix(idx_color, shadow, angle);
-    outColor = mix(idx_color, wirecolor, percentage);
+
+
+    float l = clamp(Light*2, 3, 10) * 0.1;
+    vec4 c = mix(idx_color, wirecolor, percentage);
+
+    outColor = vec4(c.rgb, c.a);
 }
 
 //

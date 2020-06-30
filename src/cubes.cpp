@@ -16,46 +16,46 @@ static const float C = 1.0f * (2.0f/4.0f);
 static const float D = 1.0f * (3.0f/4.0f);
 static const float E = 1.0f;
 
-std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, float n) {
+std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, float n, float l) {
 	float a=A,b=B,c=C,d=D,e=E;
 	if(bottom) a = c, b = d;
 
 	return {
-		-0.5f+x, 0.5f+y, 0.5f+z, a, a, idx, n,
-		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n,
-		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
+		-0.5f+x, 0.5f+y, 0.5f+z, a, a, idx, n, l,
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n, l,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n, l,
 
-		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n,
-		0.5f+x, 0.5f+y, -0.5f+z, b, e, idx, n,
-		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n
+		-0.5f+x, 0.5f+y, -0.5f+z, a, e, idx, n, l,
+		0.5f+x, 0.5f+y, -0.5f+z, b, e, idx, n, l,
+		0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n, l
 	};
 }
 
-std::vector<float> sideFace(float x, float y, float z, float idx, float n) {
+std::vector<float> sideFace(float x, float y, float z, float idx, float n, float l) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
-		-0.5f+x, -0.5f+y, -0.5f+z, b, e, idx, n,
-		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n,
-		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n,
+		-0.5f+x, -0.5f+y, -0.5f+z, b, e, idx, n, l,
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n, l,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n, l,
 
-		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n,
-		-0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n,
-		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n
+		-0.5f+x, 0.5f+y, -0.5f+z, b, a, idx, n, l,
+		-0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n, l,
+		-0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n, l
 	};
 }
 
-std::vector<float> frontFace(float x, float y, float z, float idx, float n) {
+std::vector<float> frontFace(float x, float y, float z, float idx, float n, float l) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
-		-0.5f+x, -0.5f+y, 0.5f+z, b, e, idx, n,
-		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
-		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n,
+		-0.5f+x, -0.5f+y, 0.5f+z, b, e, idx, n, l,
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n, l,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n, l,
 
-		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n,
-		0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n,
-		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n
+		-0.5f+x, 0.5f+y, 0.5f+z, b, a, idx, n, l,
+		0.5f+x, 0.5f+y, 0.5f+z, c, a, idx, n, l,
+		0.5f+x, -0.5f+y, 0.5f+z, c, e, idx, n, l
 	};
 }
 
@@ -65,7 +65,9 @@ Chunk::Chunk (int x, int y , int z) {
 	memset(mat, 0, sizeof(mat));
 	cache.first = false;
 
-	gen_world();
+	gen_terrain();
+	//TODO: //bake_light();
+
 	//printf("Chunk(%d, %d, %d) generated\n", x,y,z);
 }
 
@@ -84,7 +86,7 @@ int tree(float _seed) {
 
 }
 
-void Chunk::gen_world() {
+void Chunk::gen_terrain() {
 
 	siv::PerlinNoise perlin(1124203071);
 	float s = 200.0f;
@@ -99,11 +101,11 @@ void Chunk::gen_world() {
 
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) {
-					mat[i][k][j]=1;
+					mat[i][k][j].type =1;
 				} else if(tree_height) {
 					int tip =  H + tree_height;
 					if( y_coord < tip) {
-						mat[i][k][j] = 2;
+						mat[i][k][j].type = 2;
 					} else {
 
 						auto val = [](int x) -> bool {
@@ -115,7 +117,7 @@ void Chunk::gen_world() {
 							for(int y=0;y<5;y++) {
 								int my = (y+y_coord)-tip;
 								for(int z=-5; z<5;z++) {
-									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) mat[i+x][y+k][z+j] = 3;
+									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) mat[i+x][y+k][z+j].type = 3;
 								}
 							}
 						}
@@ -126,6 +128,35 @@ void Chunk::gen_world() {
 		}
 	}
 
+}
+
+void Chunk::bake_light() {
+
+	auto val = [](int x) -> int {
+		return std::max(std::min(x, SZ-1), 0);
+	};
+
+	for(int i=0; i<SZ;i++) {
+		for(int j=0;j<SZ;j++) {
+			for(int k=SZ-1; k>=0;k--) {
+
+				mat[val(i+1)][k][j].light += 4;
+				mat[i][k][val(j+1)].light += 4;
+				mat[val(i-1)][k][j].light += 4;
+				mat[i][k][val(j-1)].light += 4;
+
+				mat[val(i+1)][val(k+1)][j].light += 4;
+				mat[i][val(k+1)][val(j+1)].light += 4;
+				mat[val(i-1)][k][j].light += 4;
+				mat[i][val(k+1)][val(j-1)].light += 4;
+
+				if(mat[i][k][j].type > 0) {
+					mat[i][k][j].light = 10;
+					break;
+				}
+			}
+		}
+	}
 }
 
 // a dfs like function
@@ -183,44 +214,45 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 
 		int I = i + X*32, J = j + Y*32, K = k + Z*32;
 
-		if(mat[i][j][k]>0) {
+		if(mat[i][j][k].type >0) {
 			std::vector<float> v;
 
-			float idx = mat[i][j][k]-1;
+			float idx = mat[i][j][k].type-1, light = mat[i][j][k].light;
+			//light = 2;
 
 			if(id==1 && sig == 1) {
 				// bottom
-				v = topFace(I, J-1, K, true, idx, 5);
+				v = topFace(I, J-1, K, true, idx, 5, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==1 && sig == -1) {
 				// top
-				v = topFace(I, J, K, false, idx, 4);
+				v = topFace(I, J, K, false, idx, 4, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == 1) {
 				// left
-				v = sideFace(I, J, K, idx, 1);
+				v = sideFace(I, J, K, idx, 1, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == -1) {
 				// right
-				v = sideFace(I+1, J, K, idx, 3);
+				v = sideFace(I+1, J, K, idx, 3, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == -1) {
 				// front
-				v = frontFace(I, J, K, idx, 0);
+				v = frontFace(I, J, K, idx, 0, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == 1) {
 				//back
-				v = frontFace(I, J, K-1, idx, 1);
+				v = frontFace(I, J, K-1, idx, 1, light);
 				vec.insert(vec.end(), v.begin(), v.end());
 			}
 
@@ -246,7 +278,7 @@ GLuint Chunk::Vao(Context& ctx) {
 		printf("Creating mesh for (%d, %d, %d)\n", X, Y, Z);
 		std::vector<float> mesh = Mesh();
 		cache.second = ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
-		nvert = mesh.size()/7; // x,y,z,u,v
+		nvert = mesh.size()/8; // x,y,z,u,v,n,l
 
 		cache.first = true;
 	}

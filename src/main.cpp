@@ -21,6 +21,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <thread>
 
 #include "include/graphics.hpp"
 #include "include/cubes.hpp"
@@ -67,15 +68,17 @@ int main(int argc, char *argv[]) {
 
 	vector<Chunk> chunks;
 
-	for(int i=0;i<10;i++) {
-		for(int j=0;j<10;j++) {
-			for(int k=0;k<3;k++) {
+	int I=4,J=4,K=3;
+
+	for(int i=0;i<I;i++) {
+		for(int j=0;j<J;j++) {
+			for(int k=0;k<K;k++) {
 				chunks.push_back(Chunk(i,k,j));
 			}
 		}
 	}
 
-	auto fun = [&ctx, &chunks]() -> void {
+	auto fun = [&]() -> void {
 		for(Chunk& c : chunks) {
 			glBindVertexArray(c.Vao(ctx));
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
