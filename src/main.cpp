@@ -64,8 +64,8 @@ int main(int argc, char *argv[]) {
 	//ctx.loadTexture((char*)"./assets/wook_my_0.png", (char*)"texBlock");
 
 	ctx.loadTexArray((char*)"./assets/block_my_0.png", 0);
-	//ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
-	//ctx.loadTexArray((char*)"./assets/leaves.png", 2);
+	ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
+	ctx.loadTexArray((char*)"./assets/leaves.png", 2);
 
 	//Chunk chunk = Chunk(0, 0, 0), chunk1 = Chunk(1, 0, 0);
 	vector<Chunk> chunks;

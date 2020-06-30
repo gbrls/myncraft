@@ -11,7 +11,7 @@ void main() {
     vec4 wirecolor = vec4(0.0, 1.0, 0.0, 0.4);
     vec2 coord = TexCoord * 1.;
 
-    vec3 coord_3d = vec3(coord, 2);
+    vec3 coord_3d = vec3(coord, 0);
 
     vec4 idx_color = texture(tex1, coord_3d);
     outColor = mix(idx_color, wirecolor, percentage);
