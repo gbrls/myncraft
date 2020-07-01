@@ -25,6 +25,7 @@
 
 #include "include/graphics.hpp"
 #include "include/cubes.hpp"
+#include "include/object_mesh.hpp"
 
 using namespace std;
 
@@ -68,6 +69,8 @@ int main(int argc, char *argv[]) {
 
 	vector<Chunk> chunks;
 
+	ObjectMesh obj = ObjectMesh();
+
 	int I=4,J=4,K=3;
 
 	for(int i=0;i<I;i++) {
@@ -79,10 +82,13 @@ int main(int argc, char *argv[]) {
 	}
 
 	auto fun = [&]() -> void {
+		glUseProgram(ctx.CurShader());
 		for(Chunk& c : chunks) {
 			glBindVertexArray(c.Vao(ctx));
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
 		}
+		obj.Draw();
+		glUseProgram(ctx.CurShader());
 	};
 
 	GLenum err;
