@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <string>
 
@@ -13,8 +15,13 @@ class ObjectMesh {
 		int nvert;
 	public:
 		ObjectMesh();
-		void LoadTexture(Context& ctx);
+		void LoadTexture(char* file, char* name);
 		void LoadShader(std::string& vert, std::string& frag);
 		void LoadGeometry(std::vector<float> verts);
 		void Draw();
+};
+
+class TestMesh : public ObjectMesh {
+	public:
+		TestMesh();
 };

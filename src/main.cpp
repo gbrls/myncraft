@@ -69,7 +69,10 @@ int main(int argc, char *argv[]) {
 
 	vector<Chunk> chunks;
 
-	ObjectMesh obj = ObjectMesh();
+	vector<ObjectMesh> meshes;
+	//TestMesh obj = TestMesh();
+	meshes.push_back(ObjectMesh());
+	meshes.push_back(TestMesh());
 
 	int I=4,J=4,K=3;
 
@@ -87,7 +90,11 @@ int main(int argc, char *argv[]) {
 			glBindVertexArray(c.Vao(ctx));
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
 		}
-		obj.Draw();
+
+		for(ObjectMesh& o : meshes) {
+			o.Draw();
+		}
+
 		glUseProgram(ctx.CurShader());
 	};
 

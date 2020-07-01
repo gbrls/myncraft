@@ -10,6 +10,10 @@
 #include "include/object_mesh.hpp"
 #include "include/graphics.hpp"
 
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#include "include/stb_image.h"
+
 static std::string read_file(char* filename) {
 	std::ifstream f(filename);
 	std::string str;
@@ -23,16 +27,17 @@ static std::string read_file(char* filename) {
 }
 
 ObjectMesh::ObjectMesh() {
-	std::vector<float> verts = {0.5, 1.0, 0.0, 0.0, 0.0,
-					 1.0, 0.0, 0.0, 0.0, 0.0,
+	std::vector<float> verts = {0.5, 1.0, 0.0, 0.5, 1.0,
+					 1.0, 0.0, 0.0, 1.0, 0.0,
 					 0.0, 0.0, 0.0, 0.0, 0.0};
-
 
 	std::string vert = read_file((char*)"./src/shaders/default.vert");
 	std::string frag = read_file((char*)"./src/shaders/default.frag");
 
 	LoadShader(vert, frag);
 	LoadGeometry(verts);
+
+	LoadTexture((char*)"./assets/default.png", (char*)"tex");
 }
 
 void ObjectMesh::Draw() {
@@ -54,7 +59,6 @@ void ObjectMesh::LoadShader(std::string& vert, std::string& frag) {
 	glAttachShader(shader, shaderFrag);
 
 	glLinkProgram(shader);
-
 }
 
 // the default mesh has (x,y,z,u,v)
@@ -76,4 +80,40 @@ void ObjectMesh::LoadGeometry(std::vector<float> verts) {
 	glEnableVertexAttribArray(1);
 
 	nvert = verts.size()/5;
+}
+
+void ObjectMesh::LoadTexture(char*file, char* name) {
+		glActiveTexture(GL_TEXTURE0);
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D,texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	int width, height, nchannels;
+	unsigned char* data = stbi_load(file, &width, &height, &nchannels, STBI_rgb_alpha);
+
+	if(data==NULL) {
+		printf("The image (%s) does not exist\n", file);
+		exit(-1);
+	}
+
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE, data);
+
+	stbi_image_free(data);
+	glUniform1i(glGetUniformLocation(shader, name), 0);
+}
+
+TestMesh::TestMesh() {
+	std::vector<float> verts = {0.3, 0.8, 0.0, 0.0, 0.0,
+					 1.0, 0.3, 0.0, 0.0, 0.0,
+					 0.0, 0.0, 0.0, 0.0, 0.0};
+
+	std::string vert = read_file((char*)"./src/shaders/default.vert");
+	std::string frag = read_file((char*)"./src/shaders/test.frag");
+
+	LoadShader(vert, frag);
+	LoadGeometry(verts);
 }
