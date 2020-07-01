@@ -15,6 +15,23 @@
 #include "include/controls.hpp"
 #include "include/graphics.hpp"
 
+
+void setUniformMatrix(glm::mat4 mat, GLuint shader, char* name) {
+	GLint pos = glGetUniformLocation(shader, name);
+	glUniformMatrix4fv(pos, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void setUniformFloat(float f, GLuint shader, char* name) {
+	GLint pos = glGetUniformLocation(shader, name);
+	glUniform1f(pos, f);
+}
+
+void setUniformVec3(glm::vec3 vec, GLuint shader, char* name) {
+
+	GLint pos = glGetUniformLocation(shader, name);
+	glUniform3fv(pos, 1,  glm::value_ptr(vec));
+}
+
 GLuint createShader(GLenum shaderType, std::string& str_source) {
 
 	GLuint shader=glCreateShader(shaderType);
@@ -82,7 +99,7 @@ Context::Context (int _w, int _h, char* title) {
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 16*4, 16, 3);
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 16*4, 16, 4);
 
 }
 
@@ -100,7 +117,7 @@ void Context::update(Camera& cam, Controls& ctrl) {
 				break;
 			case Input::TOGGLE_DEBUG:
 				debug = 1 - debug;
-				setUniformFloat((float)debug, (char*)"percentage");
+				setUniformFloat((float)debug, CurShader(), (char*)"percentage");
 				if(debug) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 				else glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 				break;
@@ -122,7 +139,7 @@ void Context::draw(Camera cam, const std::function <void ()>& f) {
 	if(SDL_GetTicks()-last_draw < 15) return;
 
 	// moving the matrix to the camera
-	setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
+	setUniformMatrix(cam.View(glm::vec3(0,0,0)), CurShader(), (char*)"view");
 
 	float t = (float)SDL_GetTicks()/1000.0f;
 
@@ -221,19 +238,6 @@ GLuint Context::loadMeshUV(float* vert, int vsz) {
 	return vao;
 }
 
-void Context::setUniformMatrix(glm::mat4 mat, char* name) {
-	GLint pos = glGetUniformLocation(CurShader(), name);
-	glUniformMatrix4fv(pos, 1, GL_FALSE, glm::value_ptr(mat));
-}
-
-void Context::setUniformFloat(float f, char* name) {
-	GLint pos = glGetUniformLocation(CurShader(), name);
-	glUniform1f(pos, f);
-}
-
-void Context::setUniformVec3(glm::vec3 vec, char* name) {
-
-}
 
 void Context::loadTexture(char* file, char* name) {
 	int width, height, nchannels;

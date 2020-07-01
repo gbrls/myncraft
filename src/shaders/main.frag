@@ -14,7 +14,8 @@ void main() {
     vec4 shadow = vec4(0.0, 0.0, 0.0, 1.0);
 
     vec3 norm = vec3(1, 0, 0);
-    vec3 sun = normalize(vec3(0.3, -1, 0.1));
+    //vec3 sun = normalize(vec3(0.3, -1, 0.1));
+    vec3 sun = normalize(Sun);
 
     float n = Normal;
 

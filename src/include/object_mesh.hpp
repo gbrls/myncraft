@@ -7,21 +7,22 @@
 #include <GL/gl.h>
 
 #include "graphics.hpp"
+#include "controls.hpp"
 
 class ObjectMesh {
-	private:
+	public:
 		GLuint shader, texture, vao;
 		std::vector<float> verts;
 		int nvert;
-	public:
 		ObjectMesh();
 		void LoadTexture(char* file, char* name);
 		void LoadShader(std::string& vert, std::string& frag);
 		void LoadGeometry(std::vector<float> verts);
-		void Draw();
+		virtual void Draw();
 };
 
-class TestMesh : public ObjectMesh {
+class SunMesh : public ObjectMesh {
 	public:
-		TestMesh();
+		SunMesh();
+		void Draw();
 };

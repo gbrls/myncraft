@@ -15,6 +15,11 @@
 
 #include "controls.hpp"
 
+
+void setUniformMatrix(glm::mat4 mat, GLuint shader, char* name);
+void setUniformFloat(float f, GLuint shader, char* name);
+void setUniformVec3(glm::vec3 vec, GLuint shader, char* name);
+
 GLuint createShader(GLenum shaderType, std::string& str_source);
 
 struct Context {
@@ -39,9 +44,9 @@ struct Context {
 	void loadShader(std::string& vert, std::string& frag);
 	void loadMeshUVWithEBO(float* vert, int vsz, GLuint* el, int elsz);
 	GLuint loadMeshUV(float* vert, int vsz);
-	void setUniformMatrix(glm::mat4 mat, char* name);
-	void setUniformFloat(float f, char* name);
-	void setUniformVec3(glm::vec3 vec, char* name);
+	//void setUniformMatrix(glm::mat4 mat, char* name);
+	//void setUniformFloat(float f, char* name);
+	//void setUniformVec3(glm::vec3 vec, char* name);
 
 	void loadTexArray(char* file, int index);
 	void loadTexture(char* file, char* name);

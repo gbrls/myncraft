@@ -88,7 +88,7 @@ int tree(float _seed) {
 
 void Chunk::gen_terrain() {
 
-	siv::PerlinNoise perlin(1124203071);
+	siv::PerlinNoise perlin(4242424212);
 	float s = 200.0f;
 
 	for(int i=0;i<SZ;i++) {
@@ -101,7 +101,8 @@ void Chunk::gen_terrain() {
 
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) {
-					mat[i][k][j].type =1;
+					mat[i][k][j].type = 1;
+					if(y_coord < 20) mat[i][k][j].type = 4;
 				} else if(tree_height) {
 					int tip =  H + tree_height;
 					if( y_coord < tip) {

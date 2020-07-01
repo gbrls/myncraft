@@ -6,6 +6,7 @@
 ** TODO: remove wall between chunks
 ** TODO: tree leafs get cut by chunk borders
 ** TODO: fix rendering order to allow good alpha blending
+** TODO: ROCK!
  */
 
 #include <SDL2/SDL.h>
@@ -58,21 +59,26 @@ int main(int argc, char *argv[]) {
 
 	cam.pos = glm::vec3(16,16,40);
 
-	ctx.setUniformMatrix(glm::mat4(1.0), (char*)"model");
-	ctx.setUniformMatrix(cam.View(glm::vec3(0,0,0)), (char*)"view");
-	ctx.setUniformMatrix(cam.Proj(), (char*)"proj");
-	ctx.setUniformFloat(0.0f, (char*)"percentage");
+	setUniformMatrix(glm::mat4(1.0), ctx.CurShader(), (char*)"model");
+	setUniformMatrix(cam.View(glm::vec3(0,0,0)), ctx.CurShader(), (char*)"view");
+	setUniformMatrix(cam.Proj(), ctx.CurShader(), (char*)"proj");
+	setUniformFloat(0.0f, ctx.CurShader(), (char*)"percentage");
+
+	glm::vec3 sunPos = glm::vec3(-0.3, -1, 0.1);
+
+	setUniformVec3(sunPos, ctx.CurShader(), (char*)"Sun");
 
 	ctx.loadTexArray((char*)"./assets/block.png", 0);
 	ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
 	ctx.loadTexArray((char*)"./assets/leaves.png", 2);
+	ctx.loadTexArray((char*)"./assets/rock.png", 3);
 
 	vector<Chunk> chunks;
 
 	vector<ObjectMesh> meshes;
-	//TestMesh obj = TestMesh();
-	meshes.push_back(ObjectMesh());
-	meshes.push_back(TestMesh());
+	SunMesh sun = SunMesh();
+	//meshes.push_back(ObjectMesh());
+
 
 	int I=4,J=4,K=3;
 
@@ -91,9 +97,7 @@ int main(int argc, char *argv[]) {
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
 		}
 
-		for(ObjectMesh& o : meshes) {
-			o.Draw();
-		}
+		sun.Draw();
 
 		glUseProgram(ctx.CurShader());
 	};
