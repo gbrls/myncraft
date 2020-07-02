@@ -39,6 +39,10 @@ void Camera::RotatePitch(float angle) {
 	foward.x = tmp.x, foward.y = tmp.y, foward.z = tmp.z;
 }
 
+glm::vec3 Camera::ChunkPos() {
+	return pos / 32.0f;
+}
+
 Controls::Controls () {
 	shift = 0;
 	memset(keys,0,sizeof(keys));

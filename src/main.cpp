@@ -28,6 +28,7 @@
 #include "include/graphics.hpp"
 #include "include/cubes.hpp"
 #include "include/object_mesh.hpp"
+#include "include/world.hpp"
 
 using namespace std;
 
@@ -74,10 +75,11 @@ int main(int argc, char *argv[]) {
 	ctx.loadTexArray((char*)"./assets/leaves.png", 2);
 	ctx.loadTexArray((char*)"./assets/rock.png", 3);
 
+	World world = World({0, 0, 0});
 	vector<Chunk> chunks;
 
 	vector<std::unique_ptr<ObjectMesh>> meshes;
-	meshes.push_back(std::make_unique<SunMesh>());
+	//meshes.push_back(std::make_unique<SunMesh>());
 	//meshes.push_back(std::make_unique<ObjectMesh>());
 
 	int I=4,J=4,K=3;

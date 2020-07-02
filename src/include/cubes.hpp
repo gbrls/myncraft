@@ -13,6 +13,14 @@
 
 struct XYZ {
 	int x,y,z;
+
+	inline bool operator==(const XYZ& other) {
+		return ((x == other.x) && (y == other.y) && (z == other.z));
+	}
+
+	inline bool operator!=(const XYZ& other) {
+		return !((x == other.x) && (y == other.y) && (z == other.z));
+	}
 };
 
 struct Voxel {

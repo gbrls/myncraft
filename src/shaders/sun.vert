@@ -10,7 +10,7 @@ uniform mat4 proj;
 uniform vec3 offset;
 
 void main() {
-    gl_Position = proj * view * model * vec4(position+offset, 1.0);
+    gl_Position = proj * view * model * vec4(position*50, 1.0);
     TexCoord = texcoord;
 }
 

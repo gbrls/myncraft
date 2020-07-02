@@ -126,19 +126,35 @@ SunMesh::SunMesh() {
 	//setuniformmatrix(glm::translate(glm::mat4(1.0), glm::vec3(0.3, -1.0, -0.2) * 1.f), shader, (char*)"model");
 	//setUniformMatrix(glm::rotate(glm::mat4(1.0), 2.0f, glm::vec3(0, 1, 0)), shader, (char*)"model");
 }
+static glm::mat4x4 rotateAround(
+  glm::vec3 aRotationCenter,
+  glm::mat4x4 aRotationMatrix ) {
+  glm::mat4x4 translate =
+	glm::translate(
+	  glm::mat4(),
+	  glm::vec3( aRotationCenter.x, aRotationCenter.y, aRotationCenter.z ) );
+  glm::mat4x4 invTranslate = glm::inverse( translate );
+
+  glm::mat4x4 transform = translate * aRotationMatrix * invTranslate;
+
+  return transform;
+}
 
 void SunMesh::Draw(Camera& cam) {
 
 
 	glUseProgram(shader);
 
-	float t = (float)SDL_GetTicks()*0.001f;
+	float t = (float)SDL_GetTicks()*0.01f;
 
-	setUniformVec3(glm::vec3(sinf(t), 0.1, 0.3), shader, (char*)"offset");
+	setUniformVec3(glm::vec3(cam.pos.x, 0, cam.pos.z), shader, (char*)"offset");
 
-	auto pos = glm::translate(glm::mat4(1), glm::vec3(115, 70, 50));
-	setUniformMatrix(glm::rotate(pos, t, glm::vec3(0.2, 0.5, 0.8)), shader, (char*)"model");
 
+	//auto pos = glm::translate(glm::mat4(), glm::vec3(cam.pos.x, 10, cam.pos.z));
+	auto pos = glm::rotate(glm::mat4(1), t, glm::vec3(1, 0.2, 0.3));
+	pos = glm::translate(pos, cam.pos + glm::vec3(10, 1, 1));
+
+	setUniformMatrix(pos, shader, (char*)"model");
 	setUniformMatrix(cam.View(), shader, (char*)"view");
 	setUniformMatrix(cam.Proj(), shader, (char*)"proj");
 

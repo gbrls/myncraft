@@ -18,6 +18,7 @@ struct Camera {
 	glm::mat4 View();
 	glm::mat4 Proj();
 	glm::vec3 Right();
+	glm::vec3 ChunkPos();
 	void RotateYaw(float angle);
 	void RotatePitch(float angle);
 };
