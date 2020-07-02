@@ -23,6 +23,7 @@
 #include <sstream>
 #include <vector>
 #include <thread>
+#include <memory>
 
 #include "include/graphics.hpp"
 #include "include/cubes.hpp"
@@ -57,10 +58,10 @@ int main(int argc, char *argv[]) {
 	Camera cam = Camera(w,h);
 	Controls ctrl = Controls();
 
-	cam.pos = glm::vec3(16,16,40);
+	cam.pos = glm::vec3(0,0,0);
 
 	setUniformMatrix(glm::mat4(1.0), ctx.CurShader(), (char*)"model");
-	setUniformMatrix(cam.View(glm::vec3(0,0,0)), ctx.CurShader(), (char*)"view");
+	setUniformMatrix(cam.View(), ctx.CurShader(), (char*)"view");
 	setUniformMatrix(cam.Proj(), ctx.CurShader(), (char*)"proj");
 	setUniformFloat(0.0f, ctx.CurShader(), (char*)"percentage");
 
@@ -75,10 +76,9 @@ int main(int argc, char *argv[]) {
 
 	vector<Chunk> chunks;
 
-	vector<ObjectMesh> meshes;
-	SunMesh sun = SunMesh();
-	//meshes.push_back(ObjectMesh());
-
+	vector<std::unique_ptr<ObjectMesh>> meshes;
+	meshes.push_back(std::make_unique<SunMesh>());
+	//meshes.push_back(std::make_unique<ObjectMesh>());
 
 	int I=4,J=4,K=3;
 
@@ -97,7 +97,9 @@ int main(int argc, char *argv[]) {
 			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
 		}
 
-		sun.Draw();
+		for(auto& obj : meshes) {
+			obj->Draw(cam);
+		}
 
 		glUseProgram(ctx.CurShader());
 	};

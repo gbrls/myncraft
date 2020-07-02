@@ -6,6 +6,8 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <SDL2/SDL.h>
+#include <cmath>
 
 #include "include/object_mesh.hpp"
 #include "include/graphics.hpp"
@@ -40,7 +42,7 @@ ObjectMesh::ObjectMesh() {
 	LoadTexture((char*)"./assets/default.png", (char*)"tex");
 }
 
-void ObjectMesh::Draw() {
+void ObjectMesh::Draw(Camera& cam) {
 
 	glUseProgram(shader);
 	glBindVertexArray(vao);
@@ -107,18 +109,6 @@ void ObjectMesh::LoadTexture(char*file, char* name) {
 	glUniform1i(glGetUniformLocation(shader, name), 0);
 }
 
-//TestMesh::TestMesh() {
-//	std::vector<float> verts = {0.3, 0.8, 0.0, 0.0, 0.0,
-//					 1.0, 0.3, 0.0, 0.0, 0.0,
-//					 0.0, 0.0, 0.0, 0.0, 0.0};
-//
-//	std::string vert = read_file((char*)"./src/shaders/default.vert");
-//	std::string frag = read_file((char*)"./src/shaders/test.frag");
-//
-//	LoadShader(vert, frag);
-//	LoadGeometry(verts);
-//}
-
 SunMesh::SunMesh() {
 	puts("Sunmesh creaing");
 	std::vector<float> verts = {0.5, 1.0, 0.0, 0.5, 1.0,
@@ -133,15 +123,25 @@ SunMesh::SunMesh() {
 
 	LoadTexture((char*)"./assets/default.png", (char*)"tex");
 
-
 	//setuniformmatrix(glm::translate(glm::mat4(1.0), glm::vec3(0.3, -1.0, -0.2) * 1.f), shader, (char*)"model");
 	//setUniformMatrix(glm::rotate(glm::mat4(1.0), 2.0f, glm::vec3(0, 1, 0)), shader, (char*)"model");
-	setUniformVec3(glm::vec3(0.2, 0.1, 0.3), shader, (char*)"offset");
 }
 
-void SunMesh::Draw() {
+void SunMesh::Draw(Camera& cam) {
+
 
 	glUseProgram(shader);
+
+	float t = (float)SDL_GetTicks()*0.001f;
+
+	setUniformVec3(glm::vec3(sinf(t), 0.1, 0.3), shader, (char*)"offset");
+
+	auto pos = glm::translate(glm::mat4(1), glm::vec3(115, 70, 50));
+	setUniformMatrix(glm::rotate(pos, t, glm::vec3(0.2, 0.5, 0.8)), shader, (char*)"model");
+
+	setUniformMatrix(cam.View(), shader, (char*)"view");
+	setUniformMatrix(cam.Proj(), shader, (char*)"proj");
+
 	glBindVertexArray(vao);
 
 	glDrawArrays(GL_TRIANGLES, 0, nvert);

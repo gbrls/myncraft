@@ -12,7 +12,7 @@ Camera::Camera (int w, int h) {
 	foward = glm::vec3(0.0, 0.0, -1.0);
 }
 
-glm::mat4 Camera::View(glm::vec3 center) {
+glm::mat4 Camera::View() {
 	//                 pos   eye        up
 	return glm::lookAt(pos, pos+foward, glm::vec3(0, 1, 0));
 }

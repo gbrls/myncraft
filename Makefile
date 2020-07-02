@@ -9,7 +9,7 @@ NAME := Myncraft
 CFLAGS :=
 
 # add load flags, others like -pthread
-LDLIB := -lm -lSDL2 -lGL -lGLEW -pthread
+LDLIB := -lm -lSDL2 -lGL -lGLEW
 
 CC := g++ -std=c++17
 RM := rm -f

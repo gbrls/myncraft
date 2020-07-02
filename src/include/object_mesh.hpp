@@ -18,11 +18,11 @@ class ObjectMesh {
 		void LoadTexture(char* file, char* name);
 		void LoadShader(std::string& vert, std::string& frag);
 		void LoadGeometry(std::vector<float> verts);
-		virtual void Draw();
+		virtual void Draw(Camera& cam);
 };
 
 class SunMesh : public ObjectMesh {
 	public:
 		SunMesh();
-		void Draw();
+		void Draw(Camera& cam) override;
 };

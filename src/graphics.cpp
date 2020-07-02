@@ -139,7 +139,7 @@ void Context::draw(Camera cam, const std::function <void ()>& f) {
 	if(SDL_GetTicks()-last_draw < 15) return;
 
 	// moving the matrix to the camera
-	setUniformMatrix(cam.View(glm::vec3(0,0,0)), CurShader(), (char*)"view");
+	setUniformMatrix(cam.View(), CurShader(), (char*)"view");
 
 	float t = (float)SDL_GetTicks()/1000.0f;
 

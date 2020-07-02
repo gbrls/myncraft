@@ -15,7 +15,7 @@ struct Camera {
 	float ratio;
 
 	Camera (int w, int h);
-	glm::mat4 View(glm::vec3 center);
+	glm::mat4 View();
 	glm::mat4 Proj();
 	glm::vec3 Right();
 	void RotateYaw(float angle);
