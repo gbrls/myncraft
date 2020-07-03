@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <cmath>
 
 #include "include/object_mesh.hpp"
@@ -29,7 +30,8 @@ static std::string read_file(char* filename) {
 }
 
 ObjectMesh::ObjectMesh() {
-	std::vector<float> verts = {0.5, 1.0, 0.0, 0.5, 1.0,
+	std::vector<float> verts = {
+					0.5, 1.0, 0.0, 0.5, 1.0,
 					 1.0, 0.0, 0.0, 1.0, 0.0,
 					 0.0, 0.0, 0.0, 0.0, 0.0};
 
@@ -76,7 +78,7 @@ void ObjectMesh::LoadGeometry(std::vector<float> verts) {
 	glGenVertexArrays(1,&vao);
 	glBindVertexArray(vao);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)0);
 	glEnableVertexAttribArray(0);
 
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
@@ -86,13 +88,13 @@ void ObjectMesh::LoadGeometry(std::vector<float> verts) {
 }
 
 void ObjectMesh::LoadTexture(char*file, char* name) {
-		glActiveTexture(GL_TEXTURE0);
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D,texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D,texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 
 	int width, height, nchannels;
@@ -147,18 +149,74 @@ void SunMesh::Draw(Camera& cam) {
 
 	float t = (float)SDL_GetTicks()*0.01f;
 
-	setUniformVec3(glm::vec3(cam.pos.x, 0, cam.pos.z), shader, (char*)"offset");
+//	setUniformVec3(glm::vec3(cam.pos.x, 0, cam.pos.z), shader, (char*)"offset");
+//
+//
+//	auto pos = glm::translate(glm::mat4(), glm::vec3(100, 10, 1));
+//
+//
+//	setUniformMatrix(pos, shader, (char*)"model");
+//	setUniformMatrix(cam.View(), shader, (char*)"view");
+//	setUniformMatrix(cam.Proj(), shader, (char*)"proj");
+	setUniformVec3(glm::vec3(sinf(t), 0.1, 0.3), shader, (char*)"offset");
 
+	auto pos = glm::translate(glm::mat4(1), glm::vec3(115, 70, 50));
+	setUniformMatrix(glm::rotate(pos, t, glm::vec3(0.2, 0.5, 0.8)), shader, (char*)"model");
 
-	//auto pos = glm::translate(glm::mat4(), glm::vec3(cam.pos.x, 10, cam.pos.z));
-	auto pos = glm::rotate(glm::mat4(1), t, glm::vec3(1, 0.2, 0.3));
-	pos = glm::translate(pos, cam.pos + glm::vec3(10, 1, 1));
-
-	setUniformMatrix(pos, shader, (char*)"model");
 	setUniformMatrix(cam.View(), shader, (char*)"view");
 	setUniformMatrix(cam.Proj(), shader, (char*)"proj");
 
 	glBindVertexArray(vao);
 
 	glDrawArrays(GL_TRIANGLES, 0, nvert);
+}
+
+void TextMesh::LoadFont() {
+	font = TTF_OpenFont("./assets/font.ttf", 20);
+	if(font == NULL) {
+		puts("could not load font");
+	}
+
+
+	SDL_Color c = {255, 10, 10};
+	SDL_Surface* surf = TTF_RenderText_Blended(font, (char*)"hello there", c);
+	if(surf == NULL) {
+		puts("could not display message");
+	}
+
+	if(SDL_PIXELFORMAT_RGBA32 != surf->format->format) {
+		printf("Format (%u)\n", surf->format->format);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surf->pixels);
+}
+
+TextMesh::TextMesh() {
+	std::vector<float> verts = {-1.0, -1.0, 0.0, 0.0, 1.0,
+								-1.0, 1.0, 0.0, 0.0, 0.0,
+								1.0, -1.0, 0.0, 1.0, 1.0,
+								1.0, -1.0, 0.0, 1.0, 1.0,
+								-1.0, 1.0, 0.0, 0.0, 0.0,
+								1.0, 1.0, 0.0, 1.0, 0.0};
+
+	std::string vert = read_file((char*)"./src/shaders/default.vert");
+	std::string frag = read_file((char*)"./src/shaders/default.frag");
+
+	font = NULL;
+
+
+	LoadShader(vert, frag);
+	LoadGeometry(verts);
+	LoadFont();
+
+	//LoadTexture((char*)"./assets/default.png", (char*)"tex");
 }

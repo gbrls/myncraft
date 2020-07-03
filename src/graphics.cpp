@@ -4,6 +4,7 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -60,6 +61,32 @@ GLuint createShader(GLenum shaderType, std::string& str_source) {
 	return shader;
 }
 
+GLuint loadMeshUV(float* vert, int vsz) {
+
+	GLuint vbo;
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, vsz, vert, GL_STATIC_DRAW);
+
+	GLuint vao;
+	glGenVertexArrays(1,&vao);
+	glBindVertexArray(vao);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(6*sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(7*sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	return vao;
+}
+
 Context::Context (int _w, int _h, char* title) {
 	w = _w, h = _h;
 	running = true, paused = false;
@@ -69,6 +96,11 @@ Context::Context (int _w, int _h, char* title) {
 							  w, h, SDL_WINDOW_OPENGL);
 	if(window==NULL) {
 		puts(SDL_GetError());
+		exit(-1);
+	}
+
+	if(TTF_Init()== -1) {
+		puts("Failed to init sdl ttf");
 		exit(-1);
 	}
 
@@ -212,31 +244,6 @@ void Context::loadMeshUVWithEBO(float* vert, int vsz, GLuint* el, int elsz) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elsz, el, GL_STATIC_DRAW);
 }
 
-GLuint Context::loadMeshUV(float* vert, int vsz) {
-
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vsz, vert, GL_STATIC_DRAW);
-
-	GLuint vao;
-	glGenVertexArrays(1,&vao);
-	glBindVertexArray(vao);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(6*sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE,8*sizeof(float),(void*)(7*sizeof(float)));
-	glEnableVertexAttribArray(3);
-
-	return vao;
-}
 
 
 void Context::loadTexture(char* file, char* name) {

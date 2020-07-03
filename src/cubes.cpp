@@ -5,6 +5,10 @@
 #include <queue>
 #include <utility>
 #include <cmath>
+#include <functional>
+
+#include <GL/glew.h>
+#include <GL/gl.h>
 
 #include "include/perlin.hpp"
 #include "include/cubes.hpp"
@@ -16,7 +20,7 @@ static const float C = 1.0f * (2.0f/4.0f);
 static const float D = 1.0f * (3.0f/4.0f);
 static const float E = 1.0f;
 
-std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, float n, float l) {
+static std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, float n, float l) {
 	float a=A,b=B,c=C,d=D,e=E;
 	if(bottom) a = c, b = d;
 
@@ -31,7 +35,7 @@ std::vector<float> topFace(float x, float y, float z, bool bottom, float idx, fl
 	};
 }
 
-std::vector<float> sideFace(float x, float y, float z, float idx, float n, float l) {
+static std::vector<float> sideFace(float x, float y, float z, float idx, float n, float l) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
@@ -45,7 +49,7 @@ std::vector<float> sideFace(float x, float y, float z, float idx, float n, float
 	};
 }
 
-std::vector<float> frontFace(float x, float y, float z, float idx, float n, float l) {
+static std::vector<float> frontFace(float x, float y, float z, float idx, float n, float l) {
 	float a=A,b=B,c=C,e=E;
 
 	return {
@@ -59,16 +63,30 @@ std::vector<float> frontFace(float x, float y, float z, float idx, float n, floa
 	};
 }
 
+// returns a box that encloses the chunk
+static GLuint box(float X, float Y, float Z) {
+	X *= SZ, Y*=SZ, Z*=SZ;
+	std::vector<float> mesh = {
+							   X, Y, Z, 0, 0, 0, 0, 10,
+							   X+SZ, Y, Z, 0, 0, 0, 0, 10,
+							   X+SZ, Y+SZ, Z, 0, 0, 0, 0, 10,
+							   X, Y+SZ, Z, 0, 0, 0, 0, 10,
+							   X, Y+SZ, Z+SZ, 0, 0, 0, 0, 10,
+							   X+SZ, Y+SZ, Z+SZ, 0, 0, 0, 0, 10,
+							   X+SZ, Y+SZ, Z, 0, 0, 0, 0, 10
+};
+
+	return loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
+}
 
 Chunk::Chunk (int x, int y , int z) {
 	X=x,Y=y,Z=z;
 	memset(mat, 0, sizeof(mat));
-	cache.first = false;
+	vao_cached.first = false;
 
+	boxVao = box(x,y,z);
 	gen_terrain();
 	//TODO: //bake_light();
-
-	//printf("Chunk(%d, %d, %d) generated\n", x,y,z);
 }
 
 int tree(float _seed) {
@@ -82,14 +100,16 @@ int tree(float _seed) {
 		int h = (s*23)%5 + 3;
 		return h;
 	}
-	return 0;
 
+	return 0;
 }
 
 void Chunk::gen_terrain() {
 
-	siv::PerlinNoise perlin(4242424212);
+	siv::PerlinNoise perlin(4212);
 	float s = 200.0f;
+
+	const int ROCK_LEVEL = 20;
 
 	for(int i=0;i<SZ;i++) {
 		for(int j=0;j<SZ;j++) {
@@ -102,7 +122,7 @@ void Chunk::gen_terrain() {
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) {
 					mat[i][k][j].type = 1;
-					if(y_coord < 20) mat[i][k][j].type = 4;
+					if(y_coord < ROCK_LEVEL) mat[i][k][j].type = 4;
 				} else if(tree_height) {
 					int tip =  H + tree_height;
 					if( y_coord < tip) {
@@ -273,16 +293,26 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 	}
 }
 
-GLuint Chunk::Vao(Context& ctx) {
-	if(cache.first == false) {
+GLuint Chunk::Vao() {
+	if(vao_cached.first == false) {
 
 		printf("Creating mesh for (%d, %d, %d)\n", X, Y, Z);
 		std::vector<float> mesh = Mesh();
-		cache.second = ctx.loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
+		vao_cached.second = loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 		nvert = mesh.size()/8; // x,y,z,u,v,n,l
 
-		cache.first = true;
+		vao_cached.first = true;
 	}
 
-	return cache.second;
+	return vao_cached.second;
+}
+
+void Chunk::Draw(bool wire) {
+	glBindVertexArray(Vao());
+	glDrawArrays(GL_TRIANGLES, 0, nvert);
+
+	if(wire) {
+		glBindVertexArray(boxVao);
+		glDrawArrays(GL_LINE_LOOP, 0, 7);
+	}
 }

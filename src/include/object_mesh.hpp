@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 
+#include <SDL2/SDL_ttf.h>
+
 #include "graphics.hpp"
 #include "controls.hpp"
 
@@ -25,4 +27,13 @@ class SunMesh : public ObjectMesh {
 	public:
 		SunMesh();
 		void Draw(Camera& cam) override;
+};
+
+class TextMesh : public ObjectMesh {
+	private:
+		TTF_Font* font;
+	public:
+		char text[50];
+		TextMesh();
+		void LoadFont();
 };

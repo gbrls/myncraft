@@ -6,7 +6,6 @@
 ** TODO: remove wall between chunks
 ** TODO: tree leafs get cut by chunk borders
 ** TODO: fix rendering order to allow good alpha blending
-** TODO: ROCK!
  */
 
 #include <SDL2/SDL.h>
@@ -66,9 +65,6 @@ int main(int argc, char *argv[]) {
 	setUniformMatrix(cam.Proj(), ctx.CurShader(), (char*)"proj");
 	setUniformFloat(0.0f, ctx.CurShader(), (char*)"percentage");
 
-	glm::vec3 sunPos = glm::vec3(-0.3, -1, 0.1);
-
-	setUniformVec3(sunPos, ctx.CurShader(), (char*)"Sun");
 
 	ctx.loadTexArray((char*)"./assets/block.png", 0);
 	ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
@@ -76,27 +72,38 @@ int main(int argc, char *argv[]) {
 	ctx.loadTexArray((char*)"./assets/rock.png", 3);
 
 	World world = World({0, 0, 0});
-	vector<Chunk> chunks;
+	//vector<Chunk> chunks;
 
-	vector<std::unique_ptr<ObjectMesh>> meshes;
-	//meshes.push_back(std::make_unique<SunMesh>());
-	//meshes.push_back(std::make_unique<ObjectMesh>());
+	vector<std::shared_ptr<ObjectMesh>> meshes;
+	meshes.push_back(std::make_shared<SunMesh>());
+
+	auto text = std::make_shared<TextMesh>();
+	meshes.push_back(text);
+	//meshes.push_back(std::make_shared<ObjectMesh>());
 
 	int I=4,J=4,K=3;
 
-	for(int i=0;i<I;i++) {
-		for(int j=0;j<J;j++) {
-			for(int k=0;k<K;k++) {
-				chunks.push_back(Chunk(i,k,j));
-			}
-		}
-	}
+	//for(int i=0;i<I;i++) {
+	//	for(int j=0;j<J;j++) {
+	//		for(int k=0;k<K;k++) {
+	//			chunks.push_back(Chunk(i,k,j));
+	//		}
+	//	}
+	//}
 
 	auto fun = [&]() -> void {
 		glUseProgram(ctx.CurShader());
-		for(Chunk& c : chunks) {
-			glBindVertexArray(c.Vao(ctx));
-			glDrawArrays(GL_TRIANGLES, 0, c.nvert);
+
+		float t = (float)SDL_GetTicks() * 0.0001f;
+
+		glm::vec3 sunPos = glm::vec3(sinf(t), -1, cosf(t));
+		setUniformVec3(sunPos, ctx.CurShader(), (char*)"Sun");
+
+		for(auto const& p : world.loaded_chunks) {
+			auto c = p.second;
+
+			bool wire = (world.pos == (XYZ){c->X, c->Y, c->Z});
+			c->Draw(wire);
 		}
 
 		for(auto& obj : meshes) {
@@ -109,10 +116,11 @@ int main(int argc, char *argv[]) {
 	GLenum err;
 	while(ctx.running) {
 		while((err = glGetError()) != GL_NO_ERROR) {
-			printf("%x\n", err);
+			printf("Err 0x%x\n", err);
 		}
 
 		ctx.update(cam, ctrl);
+		world.Update(cam);
 		ctx.draw(cam, fun);
 	}
 

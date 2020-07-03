@@ -1,5 +1,7 @@
 #include <vector>
 #include <utility>
+#include <thread>
+#include <future>
 
 #include "include/world.hpp"
 #include "include/cubes.hpp"
@@ -16,15 +18,19 @@ World::~World() {
 	}
 }
 
+static void create_chunk(Chunk* c) {
+
+}
+
 void World::load() {
-	int I=4,J=4,K=3;
+	int I=1,J=1,K=1;
 
 	std::vector<std::pair<int,std::pair<int,int>>> toLoad;
 
-	for(int i=0+pos.x;i<I+pos.x;i++) {
-		for(int j=0+pos.y;j<J+pos.y;j++) {
-			for(int k=0+pos.z;k<K+pos.z;k++) {
-				toLoad.push_back({i,{j,k}});
+	for(int i=-I;i<=I;i++) {
+		for(int j=-J;j<=J;j++) {
+			for(int k=-K;k<=K;k++) {
+				toLoad.push_back({i+pos.x,{j+pos.y,k+pos.z}});
 			}
 		}
 	}
@@ -34,6 +40,8 @@ void World::load() {
 			int x = coord.first,y = coord.second.first,z = coord.second.second;
 			Chunk* c = new Chunk(x,y,z);
 			loaded_chunks[coord] = c;
+			//c->Vao();
+			std::async(std::launch::async, create_chunk, c);
 		}
 	}
 }
@@ -45,4 +53,12 @@ void World::Update(Camera& cam) {
 				(int)cam.ChunkPos().z};
 
 	if(_pos == pos) return;
+
+
+	printf("Moved from (%d, %d, %d) to (%d, %d, %d)\n",
+		   pos.x,pos.y,pos.z,_pos.x,_pos.y,_pos.z);
+	pos = _pos;
+
+
+	load();
 }

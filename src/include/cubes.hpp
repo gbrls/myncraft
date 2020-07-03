@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -35,13 +36,17 @@ struct Chunk {
 
 	int nvert;
 
-	std::pair<bool, GLuint> cache;
+	std::pair<bool, GLuint> vao_cached;
+
+	GLuint boxVao;
 
 	Chunk (int x, int y , int z);
 	// a dfs like function
 	std::vector<float> Mesh();
 	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec);
-	GLuint Vao(Context& ctx);
+	GLuint Vao();
+
+	void Draw(bool wire);
 
 	void gen_terrain();
 	void bake_light();
