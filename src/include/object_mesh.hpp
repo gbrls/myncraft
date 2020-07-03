@@ -32,8 +32,10 @@ class SunMesh : public ObjectMesh {
 class TextMesh : public ObjectMesh {
 	private:
 		TTF_Font* font;
+		float ratio;
 	public:
 		char text[50];
 		TextMesh();
 		void LoadFont();
+		void Draw(Camera& cam);
 };

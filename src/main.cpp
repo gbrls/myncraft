@@ -76,7 +76,6 @@ int main(int argc, char *argv[]) {
 
 	vector<std::shared_ptr<ObjectMesh>> meshes;
 	meshes.push_back(std::make_shared<SunMesh>());
-
 	auto text = std::make_shared<TextMesh>();
 	meshes.push_back(text);
 	//meshes.push_back(std::make_shared<ObjectMesh>());
@@ -94,9 +93,9 @@ int main(int argc, char *argv[]) {
 	auto fun = [&]() -> void {
 		glUseProgram(ctx.CurShader());
 
-		float t = (float)SDL_GetTicks() * 0.0001f;
+		float t = (float)SDL_GetTicks() * 0.001f;
 
-		glm::vec3 sunPos = glm::vec3(sinf(t), -1, cosf(t));
+		glm::vec3 sunPos = glm::vec3(sinf(t * 0.01), -1, cosf(t * 0.02));
 		setUniformVec3(sunPos, ctx.CurShader(), (char*)"Sun");
 
 		for(auto const& p : world.loaded_chunks) {
@@ -106,6 +105,8 @@ int main(int argc, char *argv[]) {
 			c->Draw(wire);
 		}
 
+		sprintf(text->text, "(%0.2f, %0.2f, %0.2f)", cam.pos.x, cam.pos.y, cam.pos.z);
+		text->LoadFont();
 		for(auto& obj : meshes) {
 			obj->Draw(cam);
 		}

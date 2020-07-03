@@ -147,7 +147,7 @@ void SunMesh::Draw(Camera& cam) {
 
 	glUseProgram(shader);
 
-	float t = (float)SDL_GetTicks()*0.01f;
+	float t = (float)SDL_GetTicks()*0.0001f;
 
 //	setUniformVec3(glm::vec3(cam.pos.x, 0, cam.pos.z), shader, (char*)"offset");
 //
@@ -172,21 +172,21 @@ void SunMesh::Draw(Camera& cam) {
 }
 
 void TextMesh::LoadFont() {
-	font = TTF_OpenFont("./assets/font.ttf", 20);
+	if(font == NULL) font = TTF_OpenFont("./assets/font.ttf", 28);
 	if(font == NULL) {
 		puts("could not load font");
 	}
 
 
 	SDL_Color c = {255, 10, 10};
-	SDL_Surface* surf = TTF_RenderText_Blended(font, (char*)"hello there", c);
+	SDL_Surface* surf = TTF_RenderText_Blended(font, text, c);
 	if(surf == NULL) {
 		puts("could not display message");
 	}
 
-	if(SDL_PIXELFORMAT_RGBA32 != surf->format->format) {
-		printf("Format (%u)\n", surf->format->format);
-	}
+	//if(SDL_PIXELFORMAT_RGBA32 != surf->format->format) {
+	//	printf("Format (%u)\n", surf->format->format);
+	//}
 
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &texture);
@@ -198,6 +198,18 @@ void TextMesh::LoadFont() {
 
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surf->pixels);
+
+
+	float tex_ratio = (float)surf->w/(float)surf->h;
+	SDL_FreeSurface(surf);
+
+	glUseProgram(shader);
+
+
+	float t = (float)SDL_GetTicks()*0.01f;
+	float t_scl = 0.05f;
+	auto scl = glm::scale(glm::mat4(1), glm::vec3((1.0f/ratio*tex_ratio)*t_scl,t_scl,1));
+	setUniformMatrix(glm::translate(scl, glm::vec3(1.0,15.0,0)), shader, (char*)"model");
 }
 
 TextMesh::TextMesh() {
@@ -208,15 +220,29 @@ TextMesh::TextMesh() {
 								-1.0, 1.0, 0.0, 0.0, 0.0,
 								1.0, 1.0, 0.0, 1.0, 0.0};
 
-	std::string vert = read_file((char*)"./src/shaders/default.vert");
+	std::string vert = read_file((char*)"./src/shaders/text.vert");
 	std::string frag = read_file((char*)"./src/shaders/default.frag");
 
 	font = NULL;
+	ratio = 1;
+
+	sprintf(text, "%s", "Hello there people I'm bobby brown");
 
 
 	LoadShader(vert, frag);
+	setUniformMatrix(glm::mat4(1), shader, (char*)"model");
 	LoadGeometry(verts);
 	LoadFont();
 
 	//LoadTexture((char*)"./assets/default.png", (char*)"tex");
+}
+
+void TextMesh::Draw(Camera& cam) {
+
+	ratio = cam.ratio;
+
+	glUseProgram(shader);
+	glBindVertexArray(vao);
+
+	glDrawArrays(GL_TRIANGLES, 0, nvert);
 }
