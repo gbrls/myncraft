@@ -29,6 +29,14 @@ struct Voxel {
 	unsigned char light; // 0 - 10
 };
 
+/*
+** I don't like the idea of storing vertices data in the cpu
+** so I was creating it and seding it to de gpu without storing it
+** in memory. This has one drawback, I cannot multithread it, because
+** the code that sends the vertex data to the gpu does not parelize well.
+**
+**  So, I'm going to...
+ */
 struct Chunk {
 	Voxel mat[SZ][SZ][SZ];
 	char visited[SZP][SZP][SZP];
@@ -42,8 +50,13 @@ struct Chunk {
 
 	Chunk (int x, int y , int z);
 	// a dfs like function
-	std::vector<float> Mesh();
-	void _mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec);
+	std::vector<float>* mesh_p;
+	bool done_meshing;
+	//std::vector<float>* Mesh();
+
+	void StoreMeshCPU();
+
+	void _mesh(int i, int j, int k, int id, int sig);
 	GLuint Vao();
 
 	void Draw(bool wire);

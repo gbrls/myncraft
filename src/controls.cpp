@@ -6,6 +6,7 @@
 
 Camera::Camera (int w, int h) {
 
+	W = w, H = h;
 	ratio = (float)w/(float)h;
 
 	pos = glm::vec3(0.0, 0.0, -10.0);

@@ -13,6 +13,7 @@ struct Camera {
 	glm::vec3 foward;
 	float yaw;
 	float ratio;
+	int W, H;
 
 	Camera (int w, int h);
 	glm::mat4 View();

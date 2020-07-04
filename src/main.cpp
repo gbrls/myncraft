@@ -75,20 +75,12 @@ int main(int argc, char *argv[]) {
 	//vector<Chunk> chunks;
 
 	vector<std::shared_ptr<ObjectMesh>> meshes;
-	meshes.push_back(std::make_shared<SunMesh>());
+	//meshes.push_back(std::make_shared<SunMesh>());
 	auto text = std::make_shared<TextMesh>();
 	meshes.push_back(text);
 	//meshes.push_back(std::make_shared<ObjectMesh>());
 
 	int I=4,J=4,K=3;
-
-	//for(int i=0;i<I;i++) {
-	//	for(int j=0;j<J;j++) {
-	//		for(int k=0;k<K;k++) {
-	//			chunks.push_back(Chunk(i,k,j));
-	//		}
-	//	}
-	//}
 
 	auto fun = [&]() -> void {
 		glUseProgram(ctx.CurShader());

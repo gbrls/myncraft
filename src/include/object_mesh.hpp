@@ -33,6 +33,7 @@ class TextMesh : public ObjectMesh {
 	private:
 		TTF_Font* font;
 		float ratio;
+		int window_width, window_height;
 	public:
 		char text[50];
 		TextMesh();

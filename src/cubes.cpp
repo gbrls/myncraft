@@ -84,8 +84,12 @@ Chunk::Chunk (int x, int y , int z) {
 	memset(mat, 0, sizeof(mat));
 	vao_cached.first = false;
 
+	mesh_p = NULL;
+
 	boxVao = box(x,y,z);
 	gen_terrain();
+	done_meshing = false;
+	//StoreMeshCPU();
 	//TODO: //bake_light();
 }
 
@@ -181,18 +185,26 @@ void Chunk::bake_light() {
 }
 
 // a dfs like function
-std::vector<float> Chunk::Mesh() {
-	memset(visited,0,sizeof(visited));
-	std::vector<float> vec;
+//std::vector<float> Chunk::Mesh() {
+//	memset(visited,0,sizeof(visited));
+//	std::vector<float> vec;
+//
+//	_mesh(-1, 0, 0, 0, 0, vec);
+//	//if(vec.size()>0) printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
+//	//else printf("Created an empty voxel\n");
+//
+//	return vec;
+//}
 
-	_mesh(-1, 0, 0, 0, 0, vec);
-	//if(vec.size()>0) printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
-	//else printf("Created an empty voxel\n");
-
-	return vec;
+void Chunk::StoreMeshCPU() {
+	if(mesh_p != NULL) return;
+	done_meshing = false;
+	mesh_p = new std::vector<float>;
+	_mesh(-1, 0, 0, 0, 0);
+	done_meshing = true;
 }
 
-void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec) {
+void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 	std::queue<std::pair<XYZ, std::pair<int, int>>> q;
 
 	q.push({{i,j,k}, {id, sig}});
@@ -244,37 +256,37 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 			if(id==1 && sig == 1) {
 				// bottom
 				v = topFace(I, J-1, K, true, idx, 5, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			if(id==1 && sig == -1) {
 				// top
 				v = topFace(I, J, K, false, idx, 4, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == 1) {
 				// left
 				v = sideFace(I, J, K, idx, 1, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			if(id==0 && sig == -1) {
 				// right
 				v = sideFace(I+1, J, K, idx, 3, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == -1) {
 				// front
 				v = frontFace(I, J, K, idx, 0, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			if(id==2 && sig == 1) {
 				//back
 				v = frontFace(I, J, K-1, idx, 1, light);
-				vec.insert(vec.end(), v.begin(), v.end());
+				mesh_p->insert(mesh_p->end(), v.begin(), v.end());
 			}
 
 			continue;
@@ -296,23 +308,32 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig, std::vector<float>& vec)
 GLuint Chunk::Vao() {
 	if(vao_cached.first == false) {
 
-		printf("Creating mesh for (%d, %d, %d)\n", X, Y, Z);
-		std::vector<float> mesh = Mesh();
-		vao_cached.second = loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
-		nvert = mesh.size()/8; // x,y,z,u,v,n,l
-
+		if(mesh_p == NULL || !done_meshing) {
+			return -1;
+		}
+		vao_cached.second = loadMeshUV(&(*mesh_p)[0], mesh_p->size()*sizeof(float));
+		nvert = mesh_p->size()/8; // x,y,z,u,v,n,l
 		vao_cached.first = true;
+
+		delete mesh_p;
+		mesh_p = NULL;
 	}
 
 	return vao_cached.second;
 }
 
 void Chunk::Draw(bool wire) {
-	glBindVertexArray(Vao());
+	auto vao = Vao();
+	if(vao == (GLuint)-1) {
+		return;
+	}
+	glBindVertexArray(vao);
 	glDrawArrays(GL_TRIANGLES, 0, nvert);
 
 	if(wire) {
 		glBindVertexArray(boxVao);
+		glLineWidth(10);
 		glDrawArrays(GL_LINE_LOOP, 0, 7);
+		glLineWidth(1);
 	}
 }

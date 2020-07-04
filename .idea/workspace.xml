@@ -10,15 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controls.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cubes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cubes.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/include/cubes.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/cubes.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/include/graphics.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/graphics.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/include/controls.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/controls.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/include/object_mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/object_mesh.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object_mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/object_mesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/main.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/main.vert" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/sun.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/sun.vert" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/world.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,13 +55,24 @@
       <option name="presentableId" value="Default" />
       <updated>1593793267489</updated>
       <workItem from="1593793270750" duration="468000" />
+      <workItem from="1593819401181" duration="55000" />
+      <workItem from="1593823062897" duration="179000" />
+      <workItem from="1593824432564" duration="117000" />
     </task>
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="811" y="424" width="975" height="276" key="#Notifications" timestamp="1593823111442">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="811" y="424" width="975" height="276" key="#Notifications/0.38.1920.1042@0.38.1920.1042" timestamp="1593823111442" />
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor" timestamp="1593793471659">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593793471659" />
+    <state x="623" y="267" width="672" height="678" key="search.everywhere.popup" timestamp="1593823125258">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="623" y="267" width="672" height="678" key="search.everywhere.popup/0.38.1920.1042@0.38.1920.1042" timestamp="1593823125258" />
   </component>
 </project>

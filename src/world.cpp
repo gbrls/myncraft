@@ -18,8 +18,15 @@ World::~World() {
 	}
 }
 
-static void create_chunk(Chunk* c) {
+//static void create_chunk(std::pair<int,std::pair<int,int>> coord, std::map<std::pair<int, std::pair<int,int>>,Chunk*> loaded_chunks) {
+//	int x = coord.first,y = coord.second.first,z = coord.second.second;
+//	Chunk* c;
+//	c = new Chunk(x,y,z);
+//	loaded_chunks[coord] = c;
+//}
 
+static void create_chunk(Chunk* c) {
+	c->StoreMeshCPU();
 }
 
 void World::load() {
@@ -37,11 +44,12 @@ void World::load() {
 
 	for(auto& coord : toLoad) {
 		if(!loaded_chunks.count(coord)) {
+
 			int x = coord.first,y = coord.second.first,z = coord.second.second;
-			Chunk* c = new Chunk(x,y,z);
+			Chunk* c;
+			c = new Chunk(x,y,z);
 			loaded_chunks[coord] = c;
-			//c->Vao();
-			std::async(std::launch::async, create_chunk, c);
+			c_futures.push_back(std::async(std::launch::async, create_chunk, c));
 		}
 	}
 }

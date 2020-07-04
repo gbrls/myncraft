@@ -133,6 +133,8 @@ Context::Context (int _w, int _h, char* title) {
 
 	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 16*4, 16, 4);
 
+	glViewport(0,0,w,h);
+
 }
 
 
@@ -175,7 +177,6 @@ void Context::draw(Camera cam, const std::function <void ()>& f) {
 
 	float t = (float)SDL_GetTicks()/1000.0f;
 
-	glViewport(0,0,w,h);
 	glClearColor(0.1f,0.2f,0.4f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

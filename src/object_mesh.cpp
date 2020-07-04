@@ -178,33 +178,21 @@ void TextMesh::LoadFont() {
 	}
 
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
 	SDL_Color c = {255, 10, 10};
 	SDL_Surface* surf = TTF_RenderText_Blended(font, text, c);
 	if(surf == NULL) {
 		puts("could not display message");
 	}
 
-	//if(SDL_PIXELFORMAT_RGBA32 != surf->format->format) {
-	//	printf("Format (%u)\n", surf->format->format);
-	//}
-
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surf->pixels);
-
 
 	float tex_ratio = (float)surf->w/(float)surf->h;
 	SDL_FreeSurface(surf);
 
 	glUseProgram(shader);
-
 
 	float t = (float)SDL_GetTicks()*0.01f;
 	float t_scl = 0.05f;
@@ -222,6 +210,14 @@ TextMesh::TextMesh() {
 
 	std::string vert = read_file((char*)"./src/shaders/text.vert");
 	std::string frag = read_file((char*)"./src/shaders/default.frag");
+
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	font = NULL;
 	ratio = 1;
