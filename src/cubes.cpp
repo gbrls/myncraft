@@ -87,7 +87,7 @@ Chunk::Chunk (int x, int y , int z) {
 	mesh_p = NULL;
 
 	boxVao = box(x,y,z);
-	gen_terrain();
+	//gen_terrain();
 	done_meshing = false;
 	//StoreMeshCPU();
 	//TODO: //bake_light();

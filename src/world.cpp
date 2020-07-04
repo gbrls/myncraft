@@ -26,6 +26,7 @@ World::~World() {
 //}
 
 static void create_chunk(Chunk* c) {
+	c->gen_terrain();
 	c->StoreMeshCPU();
 }
 
