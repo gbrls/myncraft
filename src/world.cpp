@@ -7,9 +7,9 @@
 #include "include/cubes.hpp"
 #include "include/controls.hpp"
 
-World::World(XYZ _pos) {
+World::World(XYZ _pos, Camera& cam) {
 	pos = _pos;
-	load();
+	load(cam);
 }
 
 World::~World() {
@@ -30,8 +30,8 @@ static void create_chunk(Chunk* c) {
 	c->StoreMeshCPU();
 }
 
-void World::load() {
-	int I=1,J=1,K=1;
+void World::load(Camera& cam) {
+	int I=2,J=1,K=2;
 
 	std::vector<std::pair<int,std::pair<int,int>>> toLoad;
 
@@ -69,5 +69,5 @@ void World::Update(Camera& cam) {
 	pos = _pos;
 
 
-	load();
+	load(cam);
 }

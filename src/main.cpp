@@ -6,6 +6,7 @@
 ** TODO: remove wall between chunks
 ** TODO: tree leafs get cut by chunk borders
 ** TODO: fix rendering order to allow good alpha blending
+** TODO: maybe have a single thread to load all the chunks linearly
  */
 
 #include <SDL2/SDL.h>
@@ -66,12 +67,12 @@ int main(int argc, char *argv[]) {
 	setUniformFloat(0.0f, ctx.CurShader(), (char*)"percentage");
 
 
-	ctx.loadTexArray((char*)"./assets/block.png", 0);
-	ctx.loadTexArray((char*)"./assets/wook_my_0.png", 1);
-	ctx.loadTexArray((char*)"./assets/leaves.png", 2);
-	ctx.loadTexArray((char*)"./assets/rock.png", 3);
+	ctx.loadTexArray((char*)"./assets/block.png", GRASS);
+	ctx.loadTexArray((char*)"./assets/wook_my_0.png", WOOD);
+	ctx.loadTexArray((char*)"./assets/leaves.png", LEAVES);
+	ctx.loadTexArray((char*)"./assets/rock.png", ROCK);
 
-	World world = World({0, 0, 0});
+	World world = World({0, 0, 0}, cam);
 	//vector<Chunk> chunks;
 
 	vector<std::shared_ptr<ObjectMesh>> meshes;

@@ -14,10 +14,10 @@ struct World {
 	std::vector<std::future<void>> c_futures;
 	XYZ pos;
 
-	World(XYZ _pos);
+	World(XYZ _pos, Camera& cam);
 	~World();
 
 	void Update(Camera& cam);
-	void load();
+	void load(Camera& cam);
 
 };

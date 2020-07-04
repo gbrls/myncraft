@@ -12,6 +12,8 @@
 // szp = sz + 2
 #define SZP 34
 
+enum VoxelType {GRASS=0, WOOD=1, LEAVES=2, ROCK=3};
+
 struct XYZ {
 	int x,y,z;
 
