@@ -39,5 +39,36 @@ A simple pause was implemented in order to take screenshots.
 A simple tree generation algorithm was implemented, currently the trees cannot occupy multiple chunks, this is a problem.
 ![](screenshots/day5.jpg)  
 
-- [Game as of now]()  
+# Game as of now
 ![](screenshots/last-0.jpg)
+## How's the game now?
+### Features
+- Cool texures :)
+- Infinite world.
+- Cool player controls and a debug mode. 
+- Trees!
+### Missing features
+- Loading chunks from disk.
+- Collision.
+- Water and other biomes.
+- Clouds.
+- the Sun & the Moon.
+- Simulated voxel shadows.
+## How's the game implemented?
+### Working
+- Chunck's meshes are generated from all the visible faces, hidden faces are not in the mesh.
+	- It was initially a DFS that visited all visible faces, but it led to stack overflows.
+	- Now, it is a refractored version of the DFS into a BFS.
+- Terrain generation is deterministic: With the same seed you'll always get the exact same world.
+	- This is implemented by using a perlin noise generator for everything, the terrain height and the tree generation.
+	- The result of Perlin(x,y) is used as a seed to the tree generation algorithm.
+- Block's faces have normals.
+	- The normals are stored in the vertex data (in the mesh) as a sigle float, then it's transformed into a vector by the shader.
+- Chunck's meshes are calculated in asynchronous calls.
+	- Maybe it wasn't a good idea because it affects the main thread, in which the main game loop is running.
+### Kinda/Not Working (Issues)
+- Tree leaves are constrained by it's chunk, you can see that some trees have their leaves sliced.
+- The meshing algorithm does not take into account chunk to chunk occlusion, every chunk has it's outter shell meshed.
+- Camera coords to Chunk coords algorithm is not working properly.
+- A async call to each chunk being genereted leads to a little lag to the main thread when a new chunk is generated.
+	- This could be solved by having a single thread to handle the chunk generation.
