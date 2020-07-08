@@ -38,7 +38,7 @@ GLuint createShader(GLenum shaderType, std::string& str_source) {
 	GLuint shader=glCreateShader(shaderType);
 
 	str_source.push_back('\0');
-	const GLchar *source = (const GLchar *)str_source.c_str();
+	auto source = (const GLchar *)str_source.c_str();
 
 	std::cout << "FILE:" << source << '\n';
 

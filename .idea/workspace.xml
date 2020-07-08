@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated />
+    <generated>
+      <config projectName="myncraft" targetName="myncraft" />
+    </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/myncraft.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/myncraft.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controls.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cubes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cubes.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/include/controls.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/controls.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/include/object_mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/object_mesh.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/object_mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/object_mesh.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/world.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,6 +24,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -41,8 +38,40 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/Myncraft" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+  </component>
+  <component name="RunManager" selected="CMake Application.myncraft">
+    <configuration name="Cmake" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_PATH="$PROJECT_DIR$/bin/Myncraft" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="myncraft" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="myncraft" TARGET_NAME="myncraft" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="myncraft" RUN_TARGET_NAME="myncraft">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Unnamed" type="CompoundRunConfigurationType">
+      <method v="2" />
+    </configuration>
+    <configuration name="Unnamed" type="ShConfigurationType" nameIsGenerated="true">
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.Cmake" />
+      <item itemvalue="CMake Application.myncraft" />
+      <item itemvalue="Compound.Unnamed" />
+      <item itemvalue="Shell Script.Unnamed" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -58,6 +87,9 @@
       <workItem from="1593819401181" duration="55000" />
       <workItem from="1593823062897" duration="179000" />
       <workItem from="1593824432564" duration="117000" />
+      <workItem from="1593892628349" duration="63000" />
+      <workItem from="1593892692477" duration="176000" />
+      <workItem from="1593893287535" duration="2315000" />
     </task>
     <servers />
   </component>
@@ -66,10 +98,26 @@
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state x="811" y="424" width="975" height="276" key="#Notifications/0.38.1920.1042@0.38.1920.1042" timestamp="1593823111442" />
-    <state x="191" y="38" width="1527" height="1042" key="SettingsEditor" timestamp="1593793471659">
+    <state x="418" y="217" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593892810516">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
-    <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593793471659" />
+    <state x="418" y="217" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.38.1920.1042@0.38.1920.1042" timestamp="1593892810516" />
+    <state x="721" y="317" key="FileChooserDialogImpl" timestamp="1593893387443">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="721" y="317" key="FileChooserDialogImpl/0.38.1920.1042@0.38.1920.1042" timestamp="1593893387443" />
+    <state width="640" height="204" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1593892687103">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state width="640" height="204" key="ImportCMakeProjectWizard.bottomPanel/0.38.1920.1042@0.38.1920.1042" timestamp="1593892687103" />
+    <state width="640" height="476" key="ImportCMakeProjectWizard.topPanel" timestamp="1593892687103">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state width="640" height="476" key="ImportCMakeProjectWizard.topPanel/0.38.1920.1042@0.38.1920.1042" timestamp="1593892687103" />
+    <state x="191" y="38" width="1527" height="1042" key="SettingsEditor" timestamp="1593893409770">
+      <screen x="0" y="38" width="1920" height="1042" />
+    </state>
+    <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593893409770" />
     <state x="623" y="267" width="672" height="678" key="search.everywhere.popup" timestamp="1593823125258">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
