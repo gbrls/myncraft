@@ -21,7 +21,7 @@ SRC := $(shell find $(DIR) -type f -name *.$(EXT))
 
 OBJS := $(subst .$(EXT),.o,$(SRC))
 
-all: mkdirs buildClient runClient
+all: mkdirs buildClient
 
 debug: mkdirs buildClientDebug runClient
 

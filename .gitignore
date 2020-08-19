@@ -4,3 +4,5 @@ Myncraft
 *.o
 *.aseprite
 *.html
+.idea
+bin

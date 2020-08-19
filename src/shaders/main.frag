@@ -38,6 +38,10 @@ void main() {
     angle = min(angle, 0.7);
 
     vec4 idx_color = texture(tex1, TexCoord);
+
+    if(idx_color.a < 0.1)
+        discard;
+
     idx_color = mix(idx_color, shadow, angle);
 
 

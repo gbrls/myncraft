@@ -4,8 +4,7 @@
 
 /*
 ** TODO: remove wall between chunks
-** TODO: tree leafs get cut by chunk borders
-** TODO: fix rendering order to allow good alpha blending
+** TODO: tree leaves get cut by chunk borders
 ** TODO: maybe have a single thread to load all the chunks linearly
  */
 
@@ -59,7 +58,7 @@ int main(int argc, char *argv[]) {
 	Camera cam = Camera(w,h);
 	Controls ctrl = Controls();
 
-	cam.pos = glm::vec3(0,0,0);
+	cam.pos = glm::vec3(0,50,0);
 
 	setUniformMatrix(glm::mat4(1.0), ctx.CurShader(), (char*)"model");
 	setUniformMatrix(cam.View(), ctx.CurShader(), (char*)"view");
@@ -81,14 +80,12 @@ int main(int argc, char *argv[]) {
 	meshes.push_back(text);
 	//meshes.push_back(std::make_shared<ObjectMesh>());
 
-	int I=4,J=4,K=3;
-
 	auto fun = [&]() -> void {
 		glUseProgram(ctx.CurShader());
 
 		float t = (float)SDL_GetTicks() * 0.001f;
 
-		glm::vec3 sunPos = glm::vec3(sinf(t * 0.01), -1, cosf(t * 0.02));
+		glm::vec3 sunPos = glm::vec3(sinf(t * 0.01f), -1, cosf(t * 0.02f));
 		setUniformVec3(sunPos, ctx.CurShader(), (char*)"Sun");
 
 		for(auto const& p : world.loaded_chunks) {

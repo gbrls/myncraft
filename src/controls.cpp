@@ -81,8 +81,8 @@ Input::event Controls::Process(SDL_Event e, Camera& cam, bool paused) {
 			if(!paused) {
 				int x = e.motion.xrel, y = e.motion.yrel;
 
-				cam.RotateYaw((float)x * -0.1);
-				cam.RotatePitch((float)y * -0.1);
+				cam.RotateYaw((float)x * -0.1f);
+				cam.RotatePitch((float)y * -0.1f);
 			}
 
 			break;

@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated>
-      <config projectName="myncraft" targetName="myncraft" />
-    </generated>
+    <generated />
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
@@ -12,9 +31,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/myncraft.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/myncraft.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/leaves.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controls.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/default.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/default.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/main.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/main.frag" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +53,43 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="5rbuj3jt" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="myncraft" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="myncraft" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
   </component>
   <component name="ProjectId" id="1eBS0ESKejJbpsImnf3PjZCsvLA" />
   <component name="ProjectViewState">
@@ -39,15 +102,15 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/Myncraft" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="CMake Application.myncraft">
-    <configuration name="Cmake" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_PATH="$PROJECT_DIR$/bin/Myncraft" EXPLICIT_BUILD_TARGET_NAME="all">
+  <component name="RunManager" selected="Makefile Application.all">
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" nameIsGenerated="true" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="myncraft" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/bin/Myncraft">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="myncraft" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="myncraft" TARGET_NAME="myncraft" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="myncraft" RUN_TARGET_NAME="myncraft">
+    <configuration name="Cmake" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_PATH="$PROJECT_DIR$/bin/Myncraft" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -68,11 +131,12 @@
     </configuration>
     <list>
       <item itemvalue="CMake Application.Cmake" />
-      <item itemvalue="CMake Application.myncraft" />
       <item itemvalue="Compound.Unnamed" />
+      <item itemvalue="Makefile Application.all" />
       <item itemvalue="Shell Script.Unnamed" />
     </list>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -90,22 +154,80 @@
       <workItem from="1593892628349" duration="63000" />
       <workItem from="1593892692477" duration="176000" />
       <workItem from="1593893287535" duration="2315000" />
+      <workItem from="1595284694978" duration="43000" />
+      <workItem from="1597858806456" duration="51000" />
+      <workItem from="1597858859425" duration="1971000" />
+      <workItem from="1597865276092" duration="498000" />
+      <workItem from="1597865795933" duration="416000" />
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="Makefile" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="811" y="424" width="975" height="276" key="#Notifications" timestamp="1593823111442">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state x="811" y="424" width="975" height="276" key="#Notifications/0.38.1920.1042@0.38.1920.1042" timestamp="1593823111442" />
-    <state x="418" y="217" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593892810516">
-      <screen x="0" y="38" width="1920" height="1042" />
+    <state x="418" y="215" width="1092" height="727" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597859696943">
+      <screen x="0" y="35" width="1920" height="1045" />
     </state>
+    <state x="418" y="215" width="1092" height="727" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.35.1920.1045@0.35.1920.1045" timestamp="1597859696943" />
     <state x="418" y="217" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.38.1920.1042@0.38.1920.1042" timestamp="1593892810516" />
-    <state x="721" y="317" key="FileChooserDialogImpl" timestamp="1593893387443">
-      <screen x="0" y="38" width="1920" height="1042" />
+    <state x="100" y="98" width="1720" height="882" key="DiffContextDialog" timestamp="1597859697296">
+      <screen x="0" y="35" width="1920" height="1045" />
     </state>
+    <state x="100" y="98" width="1720" height="882" key="DiffContextDialog/0.35.1920.1045@0.35.1920.1045" timestamp="1597859697296" />
+    <state x="721" y="315" width="530" height="605" key="FileChooserDialogImpl" timestamp="1597859692458">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state x="721" y="315" width="530" height="605" key="FileChooserDialogImpl/0.35.1920.1045@0.35.1920.1045" timestamp="1597859692458" />
     <state x="721" y="317" key="FileChooserDialogImpl/0.38.1920.1042@0.38.1920.1042" timestamp="1593893387443" />
+    <state width="1372" height="272" key="GridCell.Tab.0.bottom" timestamp="1597866208373">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1372" height="272" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208373" />
+    <state width="1372" height="272" key="GridCell.Tab.0.center" timestamp="1597866208369">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1372" height="272" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208369" />
+    <state width="1372" height="272" key="GridCell.Tab.0.left" timestamp="1597866208367">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1372" height="272" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208367" />
+    <state width="1372" height="272" key="GridCell.Tab.0.right" timestamp="1597866208371">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1372" height="272" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208371" />
+    <state width="1870" height="338" key="GridCell.Tab.1.bottom" timestamp="1597865774320">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1870" height="338" key="GridCell.Tab.1.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774320" />
+    <state width="1870" height="338" key="GridCell.Tab.1.center" timestamp="1597865774319">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1870" height="338" key="GridCell.Tab.1.center/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774319" />
+    <state width="1870" height="338" key="GridCell.Tab.1.left" timestamp="1597865774319">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1870" height="338" key="GridCell.Tab.1.left/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774319" />
+    <state width="1870" height="338" key="GridCell.Tab.1.right" timestamp="1597865774320">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state width="1870" height="338" key="GridCell.Tab.1.right/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774320" />
     <state width="640" height="204" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1593892687103">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
@@ -114,13 +236,23 @@
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state width="640" height="476" key="ImportCMakeProjectWizard.topPanel/0.38.1920.1042@0.38.1920.1042" timestamp="1593892687103" />
-    <state x="191" y="38" width="1527" height="1042" key="SettingsEditor" timestamp="1593893409770">
-      <screen x="0" y="38" width="1920" height="1042" />
+    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor" timestamp="1597860606977">
+      <screen x="0" y="35" width="1920" height="1045" />
     </state>
+    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1597860606977" />
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593893409770" />
-    <state x="623" y="267" width="672" height="678" key="search.everywhere.popup" timestamp="1593823125258">
-      <screen x="0" y="38" width="1920" height="1042" />
+    <state x="590" y="77" width="739" height="924" key="find.popup" timestamp="1597865594027">
+      <screen x="0" y="35" width="1920" height="1045" />
     </state>
+    <state x="590" y="77" width="739" height="924" key="find.popup/0.35.1920.1045@0.35.1920.1045" timestamp="1597865594027" />
+    <state x="630" y="440" width="925" height="217" key="makefile.clean.confirm.dialog" timestamp="1597858816749">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state x="630" y="440" width="925" height="217" key="makefile.clean.confirm.dialog/0.35.1920.1045@0.35.1920.1045" timestamp="1597858816749" />
+    <state x="623" y="265" width="840" height="680" key="search.everywhere.popup" timestamp="1597860767802">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state x="623" y="265" width="840" height="680" key="search.everywhere.popup/0.35.1920.1045@0.35.1920.1045" timestamp="1597860767802" />
     <state x="623" y="267" width="672" height="678" key="search.everywhere.popup/0.38.1920.1042@0.38.1920.1042" timestamp="1593823125258" />
   </component>
 </project>
