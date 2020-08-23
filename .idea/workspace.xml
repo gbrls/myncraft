@@ -30,20 +30,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/myncraft.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/myncraft.iml" afterDir="false" />
+    <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="Alpha blending working properly.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/leaves.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controls.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/controls.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/include/world.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/world.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/default.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/default.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/shaders/main.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/main.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/world.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +94,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/Myncraft" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RunManager" selected="Makefile Application.all">
     <configuration name="all" type="CLionNativeAppRunConfigurationType" nameIsGenerated="true" REDIRECT_INPUT="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="myncraft" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/bin/Myncraft">
@@ -158,8 +150,18 @@
       <workItem from="1597858806456" duration="51000" />
       <workItem from="1597858859425" duration="1971000" />
       <workItem from="1597865276092" duration="498000" />
-      <workItem from="1597865795933" duration="416000" />
+      <workItem from="1597865795933" duration="1247000" />
+      <workItem from="1598148316748" duration="933000" />
+      <workItem from="1598149619155" duration="1718000" />
     </task>
+    <task id="LOCAL-00001" summary="Alpha blending working properly.">
+      <created>1597866337897</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1597866337897</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -176,6 +178,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Alpha blending working properly." />
+    <option name="LAST_COMMIT_MESSAGE" value="Alpha blending working properly." />
   </component>
   <component name="WindowStateProjectService">
     <state x="811" y="424" width="975" height="276" key="#Notifications" timestamp="1593823111442">
@@ -196,38 +202,38 @@
     </state>
     <state x="721" y="315" width="530" height="605" key="FileChooserDialogImpl/0.35.1920.1045@0.35.1920.1045" timestamp="1597859692458" />
     <state x="721" y="317" key="FileChooserDialogImpl/0.38.1920.1042@0.38.1920.1042" timestamp="1593893387443" />
-    <state width="1372" height="272" key="GridCell.Tab.0.bottom" timestamp="1597866208373">
+    <state width="1870" height="415" key="GridCell.Tab.0.bottom" timestamp="1598151337043">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1372" height="272" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208373" />
-    <state width="1372" height="272" key="GridCell.Tab.0.center" timestamp="1597866208369">
+    <state width="1870" height="415" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
+    <state width="1870" height="415" key="GridCell.Tab.0.center" timestamp="1598151337043">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1372" height="272" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208369" />
-    <state width="1372" height="272" key="GridCell.Tab.0.left" timestamp="1597866208367">
+    <state width="1870" height="415" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
+    <state width="1870" height="415" key="GridCell.Tab.0.left" timestamp="1598151337042">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1372" height="272" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208367" />
-    <state width="1372" height="272" key="GridCell.Tab.0.right" timestamp="1597866208371">
+    <state width="1870" height="415" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337042" />
+    <state width="1870" height="415" key="GridCell.Tab.0.right" timestamp="1598151337043">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1372" height="272" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1597866208371" />
-    <state width="1870" height="338" key="GridCell.Tab.1.bottom" timestamp="1597865774320">
+    <state width="1870" height="415" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
+    <state width="1870" height="338" key="GridCell.Tab.1.bottom" timestamp="1598150105335">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="338" key="GridCell.Tab.1.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774320" />
-    <state width="1870" height="338" key="GridCell.Tab.1.center" timestamp="1597865774319">
+    <state width="1870" height="338" key="GridCell.Tab.1.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598150105335" />
+    <state width="1870" height="338" key="GridCell.Tab.1.center" timestamp="1598150105335">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="338" key="GridCell.Tab.1.center/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774319" />
-    <state width="1870" height="338" key="GridCell.Tab.1.left" timestamp="1597865774319">
+    <state width="1870" height="338" key="GridCell.Tab.1.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598150105335" />
+    <state width="1870" height="338" key="GridCell.Tab.1.left" timestamp="1598150105334">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="338" key="GridCell.Tab.1.left/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774319" />
-    <state width="1870" height="338" key="GridCell.Tab.1.right" timestamp="1597865774320">
+    <state width="1870" height="338" key="GridCell.Tab.1.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598150105334" />
+    <state width="1870" height="338" key="GridCell.Tab.1.right" timestamp="1598150105335">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="338" key="GridCell.Tab.1.right/0.35.1920.1045@0.35.1920.1045" timestamp="1597865774320" />
+    <state width="1870" height="338" key="GridCell.Tab.1.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598150105335" />
     <state width="640" height="204" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1593892687103">
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
@@ -236,15 +242,19 @@
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state width="640" height="476" key="ImportCMakeProjectWizard.topPanel/0.38.1920.1042@0.38.1920.1042" timestamp="1593892687103" />
-    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor" timestamp="1597860606977">
+    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor" timestamp="1597866969925">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1597860606977" />
+    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1597866969925" />
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593893409770" />
-    <state x="590" y="77" width="739" height="924" key="find.popup" timestamp="1597865594027">
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2" timestamp="1597866363671">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state x="590" y="77" width="739" height="924" key="find.popup/0.35.1920.1045@0.35.1920.1045" timestamp="1597865594027" />
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2/0.35.1920.1045@0.35.1920.1045" timestamp="1597866363671" />
+    <state x="590" y="77" width="739" height="924" key="find.popup" timestamp="1598149882384">
+      <screen x="0" y="35" width="1920" height="1045" />
+    </state>
+    <state x="590" y="77" width="739" height="924" key="find.popup/0.35.1920.1045@0.35.1920.1045" timestamp="1598149882384" />
     <state x="630" y="440" width="925" height="217" key="makefile.clean.confirm.dialog" timestamp="1597858816749">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>

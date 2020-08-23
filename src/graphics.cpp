@@ -147,7 +147,7 @@ void Context::update(Camera& cam, Controls& ctrl) {
 	while(SDL_PollEvent(&e)) {
 		switch (ctrl.Process(e, cam, paused)) {
 			case Input::QUIT:
-				running = 0;
+				running = false;
 				break;
 			case Input::TOGGLE_DEBUG:
 				debug = 1 - debug;

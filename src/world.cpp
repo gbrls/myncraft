@@ -1,4 +1,5 @@
 #include <vector>
+#include <SDL2/SDL.h>
 #include <utility>
 #include <thread>
 #include <future>
@@ -7,15 +8,34 @@
 #include "include/cubes.hpp"
 #include "include/controls.hpp"
 
+static void create_chunk(Chunk* c) {
+    c->gen_terrain();
+    c->StoreMeshCPU();
+}
+
+static void _thread_fn(World* w) {
+    auto v = true;
+    while(v) {
+        if(!w->loader_queue.empty()) {
+            create_chunk(w->loader_queue.front());
+            w->loader_queue.pop();
+        }
+    }
+}
+
 World::World(XYZ _pos, Camera& cam) {
 	pos = _pos;
 	load(cam);
+	loader_thread = std::make_unique<std::thread> (_thread_fn, this);
 }
 
 World::~World() {
 	for(auto const& p : loaded_chunks) {
 		delete p.second;
 	}
+
+	// this allow us to safely delete it
+	loader_thread->detach();
 }
 
 //static void create_chunk(std::pair<int,std::pair<int,int>> coord, std::map<std::pair<int, std::pair<int,int>>,Chunk*> loaded_chunks) {
@@ -25,10 +45,6 @@ World::~World() {
 //	loaded_chunks[coord] = c;
 //}
 
-static void create_chunk(Chunk* c) {
-	c->gen_terrain();
-	c->StoreMeshCPU();
-}
 
 void World::load(Camera& cam) {
 	int I=2,J=1,K=2;
@@ -50,7 +66,7 @@ void World::load(Camera& cam) {
 			Chunk* c;
 			c = new Chunk(x,y,z);
 			loaded_chunks[coord] = c;
-			c_futures.push_back(std::async(std::launch::async, create_chunk, c));
+		    loader_queue.push(c);
 		}
 	}
 }
@@ -71,3 +87,4 @@ void World::Update(Camera& cam) {
 
 	load(cam);
 }
+

@@ -5,23 +5,16 @@
 /*
 ** TODO: remove wall between chunks
 ** TODO: tree leaves get cut by chunk borders
-** TODO: maybe have a single thread to load all the chunks linearly
  */
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
-#include <SDL2/SDL_opengl.h>
-#include <GL/gl.h>
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <thread>
 #include <memory>
 
 #include "include/graphics.hpp"
