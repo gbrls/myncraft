@@ -30,13 +30,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="Alpha blending working properly.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/graphics.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/graphics.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/include/world.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/world.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/world.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="4939f16e-65e3-4e18-a075-ef665a4c2bae" name="Default Changelist" comment="Alpha blending working properly." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -152,7 +146,7 @@
       <workItem from="1597865276092" duration="498000" />
       <workItem from="1597865795933" duration="1247000" />
       <workItem from="1598148316748" duration="933000" />
-      <workItem from="1598149619155" duration="1718000" />
+      <workItem from="1598149619155" duration="2060000" />
     </task>
     <task id="LOCAL-00001" summary="Alpha blending working properly.">
       <created>1597866337897</created>
@@ -161,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1597866337897</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Refactored chunk loading algorithm (check for race condition in the future).">
+      <created>1598151653622</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1598151653622</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -181,7 +182,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Alpha blending working properly." />
-    <option name="LAST_COMMIT_MESSAGE" value="Alpha blending working properly." />
+    <MESSAGE value="Refactored chunk loading algorithm (check for race condition in the future)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored chunk loading algorithm (check for race condition in the future)." />
   </component>
   <component name="WindowStateProjectService">
     <state x="811" y="424" width="975" height="276" key="#Notifications" timestamp="1593823111442">
@@ -202,22 +204,22 @@
     </state>
     <state x="721" y="315" width="530" height="605" key="FileChooserDialogImpl/0.35.1920.1045@0.35.1920.1045" timestamp="1597859692458" />
     <state x="721" y="317" key="FileChooserDialogImpl/0.38.1920.1042@0.38.1920.1042" timestamp="1593893387443" />
-    <state width="1870" height="415" key="GridCell.Tab.0.bottom" timestamp="1598151337043">
+    <state width="1870" height="415" key="GridCell.Tab.0.bottom" timestamp="1598151572268">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="415" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
-    <state width="1870" height="415" key="GridCell.Tab.0.center" timestamp="1598151337043">
+    <state width="1870" height="415" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598151572268" />
+    <state width="1870" height="415" key="GridCell.Tab.0.center" timestamp="1598151572267">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="415" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
-    <state width="1870" height="415" key="GridCell.Tab.0.left" timestamp="1598151337042">
+    <state width="1870" height="415" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598151572267" />
+    <state width="1870" height="415" key="GridCell.Tab.0.left" timestamp="1598151572266">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="415" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337042" />
-    <state width="1870" height="415" key="GridCell.Tab.0.right" timestamp="1598151337043">
+    <state width="1870" height="415" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598151572266" />
+    <state width="1870" height="415" key="GridCell.Tab.0.right" timestamp="1598151572268">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="415" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598151337043" />
+    <state width="1870" height="415" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598151572268" />
     <state width="1870" height="338" key="GridCell.Tab.1.bottom" timestamp="1598150105335">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
@@ -247,10 +249,10 @@
     </state>
     <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1597866969925" />
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593893409770" />
-    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2" timestamp="1597866363671">
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2" timestamp="1598151679189">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2/0.35.1920.1045@0.35.1920.1045" timestamp="1597866363671" />
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2/0.35.1920.1045@0.35.1920.1045" timestamp="1598151679189" />
     <state x="590" y="77" width="739" height="924" key="find.popup" timestamp="1598149882384">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
