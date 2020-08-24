@@ -36,7 +36,7 @@ class TextMesh : public ObjectMesh {
 		int window_width, window_height;
 	public:
 		char text[50];
-		TextMesh();
-		void LoadFont();
-		void Draw(Camera& cam);
+		explicit TextMesh(int size);
+		void Update();
+		void Draw(Camera& cam) override;
 };

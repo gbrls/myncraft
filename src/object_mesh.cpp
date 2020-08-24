@@ -171,11 +171,7 @@ void SunMesh::Draw(Camera& cam) {
 	glDrawArrays(GL_TRIANGLES, 0, nvert);
 }
 
-void TextMesh::LoadFont() {
-	if(font == NULL) font = TTF_OpenFont("./assets/font.ttf", 28);
-	if(font == NULL) {
-		puts("could not load font");
-	}
+void TextMesh::Update() {
 
 
 	glActiveTexture(GL_TEXTURE0);
@@ -195,12 +191,12 @@ void TextMesh::LoadFont() {
 	glUseProgram(shader);
 
 	float t = (float)SDL_GetTicks()*0.01f;
-	float t_scl = 0.05f;
+	float t_scl = 0.02f;
 	auto scl = glm::scale(glm::mat4(1), glm::vec3((1.0f/ratio*tex_ratio)*t_scl,t_scl,1));
 	setUniformMatrix(glm::translate(scl, glm::vec3(1.0,15.0,0)), shader, (char*)"model");
 }
 
-TextMesh::TextMesh() {
+TextMesh::TextMesh(int size) {
 	std::vector<float> verts = {-1.0, -1.0, 0.0, 0.0, 1.0,
 								-1.0, 1.0, 0.0, 0.0, 0.0,
 								1.0, -1.0, 0.0, 1.0, 1.0,
@@ -228,8 +224,11 @@ TextMesh::TextMesh() {
 	LoadShader(vert, frag);
 	setUniformMatrix(glm::mat4(1), shader, (char*)"model");
 	LoadGeometry(verts);
-	LoadFont();
-
+    if(font == NULL) font = TTF_OpenFont("./assets/font.ttf", size);
+    if(font == NULL) {
+        puts("could not load font");
+    }
+    Update();
 	//LoadTexture((char*)"./assets/default.png", (char*)"tex");
 }
 

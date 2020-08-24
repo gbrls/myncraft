@@ -23,7 +23,7 @@ OBJS := $(subst .$(EXT),.o,$(SRC))
 
 all: mkdirs buildClient
 
-debug: mkdirs buildClientDebug runClient
+debug: mkdirs buildClientDebug
 
 game: mkdirs buildClient clean runClient
 
@@ -33,9 +33,13 @@ buildClient: $(OBJS)
 	@echo "Linking $(NAME)..."
 	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS)
 
+#buildClientDebug: $(OBJS)
+#	@echo "Linking (DEBUG) $(NAME)..."
+#	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS) -fsanitize=address
+
 buildClientDebug: $(OBJS)
 	@echo "Linking (DEBUG) $(NAME)..."
-	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS) -fsanitize=address
+	$(CC) -o $(OUTPUTDIR)/$(NAME) $(OBJS) $(LDLIB) $(CFLAGS) -O0
 
 %.o : %.$(EXT)
 	$(CC) -c $< -o $@ $(CFLAGS) -MD -MP

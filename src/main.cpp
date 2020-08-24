@@ -58,20 +58,18 @@ int main(int argc, char *argv[]) {
 	setUniformMatrix(cam.Proj(), ctx.CurShader(), (char*)"proj");
 	setUniformFloat(0.0f, ctx.CurShader(), (char*)"percentage");
 
-
 	ctx.loadTexArray((char*)"./assets/block.png", GRASS);
 	ctx.loadTexArray((char*)"./assets/wook_my_0.png", WOOD);
 	ctx.loadTexArray((char*)"./assets/leaves.png", LEAVES);
 	ctx.loadTexArray((char*)"./assets/rock.png", ROCK);
 
 	World world = World({0, 0, 0}, cam);
-	//vector<Chunk> chunks;
 
 	vector<std::shared_ptr<ObjectMesh>> meshes;
 	//meshes.push_back(std::make_shared<SunMesh>());
-	auto text = std::make_shared<TextMesh>();
+    //meshes.push_back(std::make_shared<ObjectMesh>());
+	auto text = std::make_shared<TextMesh>(10);
 	meshes.push_back(text);
-	//meshes.push_back(std::make_shared<ObjectMesh>());
 
 	auto fun = [&]() -> void {
 		glUseProgram(ctx.CurShader());
@@ -89,7 +87,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		sprintf(text->text, "(%0.2f, %0.2f, %0.2f)", cam.pos.x, cam.pos.y, cam.pos.z);
-		text->LoadFont();
+		text->Update();
 		for(auto& obj : meshes) {
 			obj->Draw(cam);
 		}

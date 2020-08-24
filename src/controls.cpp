@@ -59,7 +59,7 @@ bool Controls::IsKeyPressed(SDL_Keycode k) {
 }
 
 void Controls::Input(Camera& cam) {
-	float cam_speed = 0.2f;
+	float cam_speed = 0.5f;
 
 	if(IsKeyPressed(SDLK_SPACE)) cam.pos.y += cam_speed;
 	if(IsKeyPressed(SDLK_LSHIFT)) cam.pos.y -= cam_speed;

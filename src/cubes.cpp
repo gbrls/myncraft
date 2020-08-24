@@ -67,14 +67,14 @@ static std::vector<float> frontFace(float x, float y, float z, float idx, float 
 static GLuint box(float X, float Y, float Z) {
 	X *= SZ, Y*=SZ, Z*=SZ;
 	std::vector<float> mesh = {
-							   X, Y, Z, 0, 0, 0, 0, 10,
-							   X+SZ, Y, Z, 0, 0, 0, 0, 10,
-							   X+SZ, Y+SZ, Z, 0, 0, 0, 0, 10,
-							   X, Y+SZ, Z, 0, 0, 0, 0, 10,
-							   X, Y+SZ, Z+SZ, 0, 0, 0, 0, 10,
-							   X+SZ, Y+SZ, Z+SZ, 0, 0, 0, 0, 10,
-							   X+SZ, Y+SZ, Z, 0, 0, 0, 0, 10
-};
+            X + SZ, Y + SZ, Z + SZ, 0, 0, 0, 0, 10,
+            X + SZ, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
+            X + SZ, Y + 0, Z + 0, 0, 0, 0, 0, 10,
+            X + SZ, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
+            X + 0, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
+            X + 0, Y + 0, Z + 0, 0, 0, 0, 0, 10,
+            X + 0, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
+            X + 0, Y + SZ, Z + SZ, 0, 0, 0, 0, 10 };
 
 	return loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 }
@@ -110,27 +110,27 @@ int tree(float _seed) {
 
 void Chunk::gen_terrain() {
 
-	siv::PerlinNoise perlin(4212);
+	siv::PerlinNoise perlin(42242421);
 	float s = 200.0f;
 
 	const int ROCK_LEVEL = 20;
 
-	for(int i=0;i<SZ;i++) {
-		for(int j=0;j<SZ;j++) {
+	for(int i=-1;i<SZ+1;i++) {
+		for(int j=-1;j<SZ+1;j++) {
 			float H = perlin.accumulatedOctaveNoise2D((i+X*32)/s, (j+Z*32)/s, 4);
 			H += 1;
 			H *= 40;
 
-			for(int k=0;k<SZ;k++) {
+			for(int k=-1;k<SZ+1;k++) {
 
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) {
-					mat[i][k][j].type = 1;
-					if(y_coord < ROCK_LEVEL) mat[i][k][j].type = 4;
+					mat[i+1][k+1][j+1].type = 1;
+					if(y_coord < ROCK_LEVEL) mat[i+1][k+1][j+1].type = 4;
 				} else if(tree_height) {
 					int tip =  H + tree_height;
 					if( y_coord < tip) {
-						mat[i][k][j].type = 2;
+						mat[i+1][k+1][j+1].type = 2;
 					} else {
 
 						auto val = [](int x) -> bool {
@@ -142,7 +142,7 @@ void Chunk::gen_terrain() {
 							for(int y=0;y<5;y++) {
 								int my = (y+y_coord)-tip;
 								for(int z=-5; z<5;z++) {
-									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) mat[i+x][y+k][z+j].type = 3;
+									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) mat[i+x+1][y+k+1][z+j+1].type = 3;
 								}
 							}
 						}
@@ -184,18 +184,6 @@ void Chunk::bake_light() {
 	}
 }
 
-// a dfs like function
-//std::vector<float> Chunk::Mesh() {
-//	memset(visited,0,sizeof(visited));
-//	std::vector<float> vec;
-//
-//	_mesh(-1, 0, 0, 0, 0, vec);
-//	//if(vec.size()>0) printf("Created %d verts, %d faces\n", ((vec.size())/5), (vec.size())/(5*6));
-//	//else printf("Created an empty voxel\n");
-//
-//	return vec;
-//}
-
 void Chunk::StoreMeshCPU() {
 	if(mesh_p != NULL) return;
 	done_meshing = false;
@@ -210,18 +198,14 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 	q.push({{i,j,k}, {id, sig}});
 
 	auto proc = [](int x) -> int {
-		if(x==-1) return SZ+1;
-		else return x;
+	    return x+1;
 	};
 
 	while(!q.empty()) {
 		i = q.front().first.x, j = q.front().first.y, k = q.front().first.z;
 		id = q.front().second.first, sig = q.front().second.second;
 
-
 		q.pop();
-
-		//printf("%d, %d, %d\n", i,j,k);
 
 		if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) continue;
 
@@ -247,10 +231,10 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 
 		int I = i + X*32, J = j + Y*32, K = k + Z*32;
 
-		if(mat[i][j][k].type >0) {
+		if(mat[i+1][j+1][k+1].type >0) {
 			std::vector<float> v;
 
-			float idx = mat[i][j][k].type-1, light = mat[i][j][k].light;
+			float idx = mat[i+1][j+1][k+1].type-1, light = mat[i+1][j+1][k+1].light;
 			//light = 2;
 
 			if(id==1 && sig == 1) {
@@ -306,7 +290,7 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 }
 
 GLuint Chunk::Vao() {
-	if(vao_cached.first == false) {
+	if(!vao_cached.first) {
 
 		if(mesh_p == NULL || !done_meshing) {
 			return -1;
@@ -333,7 +317,7 @@ void Chunk::Draw(bool wire) {
 	if(wire) {
 		glBindVertexArray(boxVao);
 		glLineWidth(10);
-		glDrawArrays(GL_LINE_LOOP, 0, 7);
+		glDrawArrays(GL_LINE_STRIP, 0, 8);
 		glLineWidth(1);
 	}
 }

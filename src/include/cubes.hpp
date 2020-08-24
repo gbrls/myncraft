@@ -10,7 +10,7 @@
 
 #define SZ  32
 // szp = sz + 2
-#define SZP 34
+#define SZP (SZ+2)
 
 enum VoxelType {GRASS=0, WOOD=1, LEAVES=2, ROCK=3};
 
@@ -40,7 +40,7 @@ struct Voxel {
 **  So, I'm going to...
  */
 struct Chunk {
-	Voxel mat[SZ][SZ][SZ];
+	Voxel mat[SZP][SZP][SZP];
 	char visited[SZP][SZP][SZP];
 	int X,Y,Z;
 

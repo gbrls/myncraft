@@ -38,14 +38,6 @@ World::~World() {
 	loader_thread->detach();
 }
 
-//static void create_chunk(std::pair<int,std::pair<int,int>> coord, std::map<std::pair<int, std::pair<int,int>>,Chunk*> loaded_chunks) {
-//	int x = coord.first,y = coord.second.first,z = coord.second.second;
-//	Chunk* c;
-//	c = new Chunk(x,y,z);
-//	loaded_chunks[coord] = c;
-//}
-
-
 void World::load(Camera& cam) {
 	int I=2,J=1,K=2;
 
@@ -73,9 +65,10 @@ void World::load(Camera& cam) {
 
 void World::Update(Camera& cam) {
 
-	XYZ _pos = {(int)cam.ChunkPos().x,
-				(int)cam.ChunkPos().y,
-				(int)cam.ChunkPos().z};
+    auto cpos = cam.ChunkPos();
+	XYZ _pos = {(int)cpos.x,
+				(int)cpos.y,
+				(int)cpos.z};
 
 	if(_pos == pos) return;
 
