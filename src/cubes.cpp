@@ -14,6 +14,11 @@
 #include "include/cubes.hpp"
 #include "include/graphics.hpp"
 
+/*
+ * The mesh has little vertices and its fast to render,
+ * but it's costly to generate it.
+ */
+
 static const float A = 0.0f;
 static const float B = 1.0f * (1.0f/4.0f);
 static const float C = 1.0f * (2.0f/4.0f);
@@ -110,6 +115,8 @@ int tree(float _seed) {
 
 void Chunk::gen_terrain() {
 
+    max_height = 0;
+
 	siv::PerlinNoise perlin(42242421);
 	float s = 200.0f;
 
@@ -124,7 +131,8 @@ void Chunk::gen_terrain() {
 			for(int k=-1;k<SZ+1;k++) {
 
 				int tree_height = tree(H), y_coord = k+Y*32;
-				if(y_coord < H) {
+				if(y_coord < H) { // placing block
+				    max_height = std::max(max_height, k);
 					mat[i+1][k+1][j+1].type = 1;
 					if(y_coord < ROCK_LEVEL) mat[i+1][k+1][j+1].type = 4;
 				} else if(tree_height) {
@@ -193,6 +201,9 @@ void Chunk::StoreMeshCPU() {
 }
 
 void Chunk::_mesh(int i, int j, int k, int id, int sig) {
+
+    if(max_height == 0) return;
+
 	std::queue<std::pair<XYZ, std::pair<int, int>>> q;
 
 	q.push({{i,j,k}, {id, sig}});
@@ -207,6 +218,7 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 
 		q.pop();
 
+        if(j > max_height+2) continue;
 		if(i < -1 || j < -1 || k < -1 || i > SZ || j > SZ || k > SZ) continue;
 
 		int ni = proc(i), nj = proc(j), nk = proc(k);

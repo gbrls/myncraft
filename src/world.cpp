@@ -15,9 +15,12 @@ static void create_chunk(Chunk* c) {
 
 static void _thread_fn(World* w) {
     auto v = true;
+    unsigned int t;
     while(v) {
         if(!w->loader_queue.empty()) {
+            t = SDL_GetTicks();
             create_chunk(w->loader_queue.front());
+            printf("%lu vertices loaded in %d ms\n", w->loader_queue.front()->mesh_p->size(), SDL_GetTicks()-t);
             w->loader_queue.pop();
         }
     }

@@ -9,7 +9,6 @@
 #include "graphics.hpp"
 
 #define SZ  32
-// szp = sz + 2
 #define SZP (SZ+2)
 
 enum VoxelType {GRASS=0, WOOD=1, LEAVES=2, ROCK=3};
@@ -33,9 +32,9 @@ struct Voxel {
 
 /*
 ** I don't like the idea of storing vertices data in the cpu
-** so I was creating it and seding it to de gpu without storing it
+** so I was creating it and sending it to de gpu without storing it
 ** in memory. This has one drawback, I cannot multithread it, because
-** the code that sends the vertex data to the gpu does not parelize well.
+** the code that sends the vertex data to the gpu does not parallelize well.
 **
 **  So, I'm going to...
  */
@@ -45,6 +44,10 @@ struct Chunk {
 	int X,Y,Z;
 
 	int nvert;
+
+	// max_height holds the height of the topmost block.
+	// it's used for optimizations on the mesh algorithm.
+	int max_height;
 
 	std::pair<bool, GLuint> vao_cached;
 
