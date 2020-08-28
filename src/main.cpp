@@ -5,6 +5,8 @@
 /*
 ** TODO: remove wall between chunks
 ** TODO: tree leaves get cut by chunk borders
+ * TODO: OpenGL "garbage collection" https://stackoverflow.com/questions/10573684/vertex-buffer-objects-delete-process-opengl
+ * TODO: don't render chunks outise frustum
  */
 
 #include <SDL2/SDL.h>
@@ -41,9 +43,10 @@ int main(int argc, char *argv[]) {
 	int w = 1400, h = 900;
 
 	Context ctx = Context(w, h, (char*)"Myncraft");
+	ObjectMesh::LoadDefaults();
 
-	string vert = read_file((char*)"./src/shaders/main.vert");
-	string frag = read_file((char*)"./src/shaders/main.frag");
+	string vert = read_file((char*)"./src/shaders/cube.vert");
+	string frag = read_file((char*)"./src/shaders/cube.frag");
 	string wire_frag = read_file((char*)"./src/shaders/wireframe.frag");
 
 	ctx.loadShader(vert, frag);

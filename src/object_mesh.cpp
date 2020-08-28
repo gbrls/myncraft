@@ -17,6 +17,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 
+GLuint ObjectMesh::TEST_SHADER;
+
 static std::string read_file(char* filename) {
 	std::ifstream f(filename);
 	std::string str;
@@ -29,6 +31,51 @@ static std::string read_file(char* filename) {
 	return str;
 }
 
+void ObjectMesh::LoadDefaults() {
+
+    std::string vert = read_file((char*)"./src/shaders/default.vert");
+    std::string frag = read_file((char*)"./src/shaders/default.frag");
+
+    TEST_SHADER = LoadShader(vert, frag);
+}
+
+GLuint ObjectMesh::LoadShader(std::string& vert, std::string& frag) {
+    GLuint shader = glCreateProgram();
+
+    GLuint shaderVert = createShader(GL_VERTEX_SHADER, vert);
+    GLuint shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
+
+
+    glAttachShader(shader, shaderVert);
+    glAttachShader(shader, shaderFrag);
+
+    glLinkProgram(shader);
+    glUseProgram(shader);
+
+    return shader;
+}
+
+// the default mesh has (x,y,z,u,v)
+void ObjectMesh::LoadGeometry(std::vector<float> verts, GLuint* vao, int* nvert) {
+    GLuint vbo;
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), &verts[0],
+                 GL_STATIC_DRAW);
+
+    glGenVertexArrays(1,vao);
+    glBindVertexArray(*vao);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    *nvert = verts.size()/5;
+}
+
 ObjectMesh::ObjectMesh() {
 	std::vector<float> verts = {
 					0.5, 1.0, 0.0, 0.5, 1.0,
@@ -38,13 +85,26 @@ ObjectMesh::ObjectMesh() {
 	std::string vert = read_file((char*)"./src/shaders/default.vert");
 	std::string frag = read_file((char*)"./src/shaders/default.frag");
 
-	LoadShader(vert, frag);
-	LoadGeometry(verts);
+	shader = TEST_SHADER;
+	LoadGeometry(verts, &vao, &nvert);
 
 	LoadTexture((char*)"./assets/default.png", (char*)"tex");
 }
 
+ObjectMesh::ObjectMesh(std::vector<float> verts) {
+    std::string vert = read_file((char*)"./src/shaders/default.vert");
+    std::string frag = read_file((char*)"./src/shaders/default.frag");
+
+    shader = TEST_SHADER;
+    LoadGeometry(verts, &vao, &nvert);
+
+    LoadTexture((char*)"./assets/default.png", (char*)"tex");
+}
+
 void ObjectMesh::Draw(Camera& cam) {
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
 	glUseProgram(shader);
 	glBindVertexArray(vao);
@@ -52,40 +112,7 @@ void ObjectMesh::Draw(Camera& cam) {
 	glDrawArrays(GL_TRIANGLES, 0, nvert);
 }
 
-void ObjectMesh::LoadShader(std::string& vert, std::string& frag) {
-	shader = glCreateProgram();
 
-	GLuint shaderVert = createShader(GL_VERTEX_SHADER, vert);
-	GLuint shaderFrag = createShader(GL_FRAGMENT_SHADER, frag);
-
-
-	glAttachShader(shader, shaderVert);
-	glAttachShader(shader, shaderFrag);
-
-	glLinkProgram(shader);
-	glUseProgram(shader);
-}
-
-// the default mesh has (x,y,z,u,v)
-void ObjectMesh::LoadGeometry(std::vector<float> verts) {
-	GLuint vbo;
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), &verts[0],
-				 GL_STATIC_DRAW);
-
-	glGenVertexArrays(1,&vao);
-	glBindVertexArray(vao);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,5*sizeof(float),(void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	nvert = verts.size()/5;
-}
 
 void ObjectMesh::LoadTexture(char*file, char* name) {
 	glActiveTexture(GL_TEXTURE0);
@@ -111,6 +138,8 @@ void ObjectMesh::LoadTexture(char*file, char* name) {
 	glUniform1i(glGetUniformLocation(shader, name), 0);
 }
 
+
+
 SunMesh::SunMesh() {
 	puts("Sunmesh creaing");
 	std::vector<float> verts = {0.5, 1.0, 0.0, 0.5, 1.0,
@@ -120,8 +149,8 @@ SunMesh::SunMesh() {
 	std::string vert = read_file((char*)"./src/shaders/sun.vert");
 	std::string frag = read_file((char*)"./src/shaders/default.frag");
 
-	LoadShader(vert, frag);
-	LoadGeometry(verts);
+	shader = LoadShader(vert, frag);
+	LoadGeometry(verts, &vao, &nvert);
 
 	LoadTexture((char*)"./assets/default.png", (char*)"tex");
 
@@ -143,7 +172,6 @@ static glm::mat4x4 rotateAround(
 }
 
 void SunMesh::Draw(Camera& cam) {
-
 
 	glUseProgram(shader);
 
@@ -221,9 +249,9 @@ TextMesh::TextMesh(int size) {
 	sprintf(text, "%s", "Hello there people I'm bobby brown");
 
 
-	LoadShader(vert, frag);
+	shader = LoadShader(vert, frag);
 	setUniformMatrix(glm::mat4(1), shader, (char*)"model");
-	LoadGeometry(verts);
+	LoadGeometry(verts, &vao, &nvert);
     if(font == NULL) font = TTF_OpenFont("./assets/font.ttf", size);
     if(font == NULL) {
         puts("could not load font");
@@ -233,6 +261,9 @@ TextMesh::TextMesh(int size) {
 }
 
 void TextMesh::Draw(Camera& cam) {
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
 	ratio = cam.ratio;
 

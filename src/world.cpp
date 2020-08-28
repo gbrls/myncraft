@@ -69,9 +69,9 @@ void World::load(Camera& cam) {
 void World::Update(Camera& cam) {
 
     auto cpos = cam.ChunkPos();
-	XYZ _pos = {(int)cpos.x,
-				(int)cpos.y,
-				(int)cpos.z};
+	XYZ _pos = {(int)floor(cpos.x),
+                (int)floor(cpos.y),
+                (int)floor(cpos.z)};
 
 	if(_pos == pos) return;
 

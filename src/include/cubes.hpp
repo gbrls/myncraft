@@ -7,6 +7,7 @@
 #include <GL/gl.h>
 
 #include "graphics.hpp"
+#include "object_mesh.hpp"
 
 #define SZ  32
 #define SZP (SZ+2)
@@ -51,7 +52,10 @@ struct Chunk {
 
 	std::pair<bool, GLuint> vao_cached;
 
+	// box that encloses the chunk
 	GLuint boxVao;
+	ObjectMesh boxObj;
+
 
 	Chunk (int x, int y , int z);
 	// a dfs like function

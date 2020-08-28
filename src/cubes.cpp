@@ -13,6 +13,7 @@
 #include "include/perlin.hpp"
 #include "include/cubes.hpp"
 #include "include/graphics.hpp"
+#include "include/object_mesh.hpp"
 
 /*
  * The mesh has little vertices and its fast to render,
@@ -69,17 +70,66 @@ static std::vector<float> frontFace(float x, float y, float z, float idx, float 
 }
 
 // returns a box that encloses the chunk
-static GLuint box(float X, float Y, float Z) {
-	X *= SZ, Y*=SZ, Z*=SZ;
-	std::vector<float> mesh = {
-            X + SZ, Y + SZ, Z + SZ, 0, 0, 0, 0, 10,
-            X + SZ, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
-            X + SZ, Y + 0, Z + 0, 0, 0, 0, 0, 10,
-            X + SZ, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
-            X + 0, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
-            X + 0, Y + 0, Z + 0, 0, 0, 0, 0, 10,
-            X + 0, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
-            X + 0, Y + SZ, Z + SZ, 0, 0, 0, 0, 10 };
+//static GLuint box(float X, float Y, float Z) {
+//	X *= SZ, Y*=SZ, Z*=SZ;
+//	std::vector<float> mesh = {
+//            X + SZ, Y + SZ, Z + SZ, 0, 0, 0, 0, 10,
+//            X + SZ, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
+//            X + SZ, Y + 0, Z + 0, 0, 0, 0, 0, 10,
+//            X + SZ, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
+//            X + 0, Y + 0, Z + SZ, 0, 0, 0, 0, 10,
+//            X + 0, Y + 0, Z + 0, 0, 0, 0, 0, 10,
+//            X + 0, Y + SZ, Z + 0, 0, 0, 0, 0, 10,
+//            X + 0, Y + SZ, Z + SZ, 0, 0, 0, 0, 10 };
+//
+//	return loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
+//}
+
+static GLuint square(float x, float y, float z) {
+    x *= SZ, y *= SZ, z *= SZ;
+    std::vector<float> mesh = {
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 00.0f,
+            0.5f +x, -0.5f+y, -0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 00.0f,
+            0.5f +x,  0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 00.0f,
+            0.5f +x,  0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 00.0f,
+            -0.5f+x,  0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 00.0f,
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 00.0f,
+
+            -0.5f+x, -0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x, -0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x,  0.5f+y,  0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x,  0.5f+y,  0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x,  0.5f+y,  0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+            -0.5f+x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x,  0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+            0.5f+x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f+x,  0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f+x, -0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f+x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x, -0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x, -0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x, -0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x, -0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+
+            -0.5f+x,  0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x,  0.5f+y, -0.5f+z,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            0.5f +x,  0.5f+y,  0.5f+z,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x,  0.5f+y,  0.5f+z,  0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+            -0.5f+x,  0.5f+y, -0.5f+z,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    };
 
 	return loadMeshUV(&mesh[0], mesh.size()*sizeof(float));
 }
@@ -91,7 +141,11 @@ Chunk::Chunk (int x, int y , int z) {
 
 	mesh_p = NULL;
 
-	boxVao = box(x,y,z);
+	//boxVao = square(x,y,z);
+    //boxObj = ObjectMesh();
+    //boxObj = ObjectMesh(square(x+x/2,y+y/2,z+z/2));
+    boxVao = square(x+0.5,y+0.5,z+0.5);
+
 	//gen_terrain();
 	done_meshing = false;
 	//StoreMeshCPU();
@@ -308,7 +362,7 @@ void Chunk::_mesh(int i, int j, int k, int id, int sig) {
 GLuint Chunk::Vao() {
 	if(!vao_cached.first) {
 
-		if(mesh_p == NULL || !done_meshing) {
+		if(mesh_p == NULL || !done_meshing || max_height == 0) {
 			return -1;
 		}
 		vao_cached.second = loadMeshUV(&(*mesh_p)[0], mesh_p->size()*sizeof(float));
@@ -324,16 +378,28 @@ GLuint Chunk::Vao() {
 
 void Chunk::Draw(bool wire) {
 	auto vao = Vao();
-	if(vao == (GLuint)-1) {
-		return;
-	}
-	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, nvert);
 
-	if(wire) {
-		glBindVertexArray(boxVao);
-		glLineWidth(10);
-		glDrawArrays(GL_LINE_STRIP, 0, 8);
-		glLineWidth(1);
-	}
+	bool anything_to_draw = (vao != -1) && (nvert > 0);
+
+	if(anything_to_draw) {
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, nvert);
+    }
+
+	//if(wire) {
+	//	glBindVertexArray(boxVao);
+	//	glLineWidth(10);
+	//	glDrawArrays(GL_LINE_STRIP, 0, 8);
+	//	glLineWidth(1);
+	//}
+
+	//if(wire) {
+    //    glBindVertexArray(boxObj.vao);
+    //    glDrawArrays(GL_TRIANGLES, 0, boxObj.nvert);
+    //}
+
+    if(wire) {
+        glBindVertexArray(boxVao);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 }

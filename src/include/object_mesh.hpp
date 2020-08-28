@@ -13,15 +13,26 @@
 
 class ObjectMesh {
 	public:
-		GLuint shader, texture, vao;
+
+
+        static GLuint TEST_SHADER;
+        static std::vector<GLuint> textures;
+
+        static void LoadDefaults();
+        static GLuint LoadShader(std::string& vert, std::string& frag);
+        static void LoadGeometry(std::vector<float> verts, GLuint* vao, int* nvert);
+
+        GLuint shader, texture, vao;
 		std::vector<float> verts;
 		int nvert;
+
 		ObjectMesh();
+        explicit ObjectMesh(std::vector<float> verts);
+
 		void LoadTexture(char* file, char* name);
-		void LoadShader(std::string& vert, std::string& frag);
-		void LoadGeometry(std::vector<float> verts);
 		virtual void Draw(Camera& cam);
 };
+
 
 class SunMesh : public ObjectMesh {
 	public:

@@ -34,7 +34,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cubes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cubes.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/include/cubes.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/cubes.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/world.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/include/object_mesh.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/include/object_mesh.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object_mesh.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/object_mesh.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/main.frag" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/cube.frag" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shaders/main.vert" beforeDir="false" afterPath="$PROJECT_DIR$/src/shaders/cube.vert" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +100,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/Myncraft" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -121,6 +125,11 @@
     </configuration>
     <configuration name="Unnamed" type="CompoundRunConfigurationType">
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="Unnamed" type="ShConfigurationType" nameIsGenerated="true">
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -170,7 +179,14 @@
       <workItem from="1598235532236" duration="5063000" />
       <workItem from="1598312598623" duration="6000" />
       <workItem from="1598564637693" duration="21000" />
-      <workItem from="1598564714985" duration="2565000" />
+      <workItem from="1598564714985" duration="3403000" />
+      <workItem from="1598627825974" duration="1564000" />
+      <workItem from="1598629427097" duration="333000" />
+      <workItem from="1598629785592" duration="104000" />
+      <workItem from="1598630770762" duration="317000" />
+      <workItem from="1598637521165" duration="4878000" />
+      <workItem from="1598649249266" duration="2033000" />
+      <workItem from="1598652342097" duration="2274000" />
     </task>
     <task id="LOCAL-00001" summary="Alpha blending working properly.">
       <created>1597866337897</created>
@@ -200,7 +216,21 @@
       <option name="project" value="LOCAL" />
       <updated>1598240578445</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Mesh algorithm optimized.">
+      <created>1598577111728</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1598577111728</updated>
+    </task>
+    <task id="LOCAL-00006" summary="small fix to max_height">
+      <created>1598629369229</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1598629369229</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -222,7 +252,9 @@
     <MESSAGE value="Alpha blending working properly." />
     <MESSAGE value="Refactored chunk loading algorithm (check for race condition in the future)." />
     <MESSAGE value="Minor refactorings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor refactorings" />
+    <MESSAGE value="Mesh algorithm optimized." />
+    <MESSAGE value="small fix to max_height" />
+    <option name="LAST_COMMIT_MESSAGE" value="small fix to max_height" />
   </component>
   <component name="WindowStateProjectService">
     <state x="811" y="424" width="975" height="276" key="#Notifications" timestamp="1593823111442">
@@ -243,22 +275,30 @@
     </state>
     <state x="721" y="315" width="530" height="605" key="FileChooserDialogImpl/0.35.1920.1045@0.35.1920.1045" timestamp="1598207521654" />
     <state x="721" y="317" key="FileChooserDialogImpl/0.38.1920.1042@0.38.1920.1042" timestamp="1593893387443" />
-    <state width="1870" height="164" key="GridCell.Tab.0.bottom" timestamp="1598566818149">
+    <state width="1870" height="101" key="GridCell.Tab.0.bottom" timestamp="1598654616210">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="164" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598566818149" />
-    <state width="1870" height="164" key="GridCell.Tab.0.center" timestamp="1598566818148">
+    <state width="1870" height="101" key="GridCell.Tab.0.bottom/0.35.1920.1045/1920.0.1920.1080@0.35.1920.1045" timestamp="1598654616210" />
+    <state width="1870" height="101" key="GridCell.Tab.0.bottom/0.35.1920.1045@0.35.1920.1045" timestamp="1598648865226" />
+    <state width="1870" height="101" key="GridCell.Tab.0.bottom/0.35.3840.1045@0.35.3840.1045" timestamp="1598651282153" />
+    <state width="1870" height="101" key="GridCell.Tab.0.center" timestamp="1598654616210">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="164" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598566818148" />
-    <state width="1870" height="164" key="GridCell.Tab.0.left" timestamp="1598566818148">
+    <state width="1870" height="101" key="GridCell.Tab.0.center/0.35.1920.1045/1920.0.1920.1080@0.35.1920.1045" timestamp="1598654616210" />
+    <state width="1870" height="101" key="GridCell.Tab.0.center/0.35.1920.1045@0.35.1920.1045" timestamp="1598648865225" />
+    <state width="1870" height="101" key="GridCell.Tab.0.center/0.35.3840.1045@0.35.3840.1045" timestamp="1598651282152" />
+    <state width="1870" height="101" key="GridCell.Tab.0.left" timestamp="1598654616209">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="164" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598566818148" />
-    <state width="1870" height="164" key="GridCell.Tab.0.right" timestamp="1598566818148">
+    <state width="1870" height="101" key="GridCell.Tab.0.left/0.35.1920.1045/1920.0.1920.1080@0.35.1920.1045" timestamp="1598654616209" />
+    <state width="1870" height="101" key="GridCell.Tab.0.left/0.35.1920.1045@0.35.1920.1045" timestamp="1598648865225" />
+    <state width="1870" height="101" key="GridCell.Tab.0.left/0.35.3840.1045@0.35.3840.1045" timestamp="1598651282152" />
+    <state width="1870" height="101" key="GridCell.Tab.0.right" timestamp="1598654616210">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state width="1870" height="164" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598566818148" />
+    <state width="1870" height="101" key="GridCell.Tab.0.right/0.35.1920.1045/1920.0.1920.1080@0.35.1920.1045" timestamp="1598654616210" />
+    <state width="1870" height="101" key="GridCell.Tab.0.right/0.35.1920.1045@0.35.1920.1045" timestamp="1598648865226" />
+    <state width="1870" height="101" key="GridCell.Tab.0.right/0.35.3840.1045@0.35.3840.1045" timestamp="1598651282153" />
     <state width="1870" height="338" key="GridCell.Tab.1.bottom" timestamp="1598208885099">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
@@ -283,15 +323,16 @@
       <screen x="0" y="38" width="1920" height="1042" />
     </state>
     <state width="640" height="476" key="ImportCMakeProjectWizard.topPanel/0.38.1920.1042@0.38.1920.1042" timestamp="1593892687103" />
-    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor" timestamp="1598236170443">
+    <state x="179" y="35" width="1241" height="912" key="SettingsEditor" timestamp="1598637578363">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1598236170443" />
+    <state x="179" y="35" width="1241" height="912" key="SettingsEditor/0.35.1920.1045/1920.0.1920.1080@0.35.1920.1045" timestamp="1598629755016" />
+    <state x="179" y="35" width="1512" height="1045" key="SettingsEditor/0.35.1920.1045@0.35.1920.1045" timestamp="1598637578363" />
     <state x="191" y="38" width="1527" height="1042" key="SettingsEditor/0.38.1920.1042@0.38.1920.1042" timestamp="1593893409770" />
-    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2" timestamp="1598240590219">
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2" timestamp="1598577121409">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
-    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2/0.35.1920.1045@0.35.1920.1045" timestamp="1598240590219" />
+    <state x="455" y="212" width="1000" height="661" key="Vcs.Push.Dialog.v2/0.35.1920.1045@0.35.1920.1045" timestamp="1598577121409" />
     <state x="100" y="98" width="1720" height="882" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1598206368626">
       <screen x="0" y="35" width="1920" height="1045" />
     </state>
