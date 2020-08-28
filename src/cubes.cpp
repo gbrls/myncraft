@@ -132,12 +132,13 @@ void Chunk::gen_terrain() {
 
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) { // placing block
-				    max_height = std::max(max_height, k);
+				    max_height = std::max(max_height, k+1);
 					mat[i+1][k+1][j+1].type = 1;
 					if(y_coord < ROCK_LEVEL) mat[i+1][k+1][j+1].type = 4;
-				} else if(tree_height) {
+				} else if(tree_height) { // placing wood
 					int tip =  H + tree_height;
 					if( y_coord < tip) {
+                        max_height = std::max(max_height, k+1);
 						mat[i+1][k+1][j+1].type = 2;
 					} else {
 
@@ -145,12 +146,15 @@ void Chunk::gen_terrain() {
 							return (x >= 0 && x < SZ);
 						};
 
-						//placing leafs
+						//placing leaves
 						for(int x=-5; x<5;x++) {
 							for(int y=0;y<5;y++) {
 								int my = (y+y_coord)-tip;
 								for(int z=-5; z<5;z++) {
-									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) mat[i+x+1][y+k+1][z+j+1].type = 3;
+									if((x*x + my*my + z*z < 10) && val(i+x) && val(y+k) && val(z+j)) {
+                                        max_height = std::max(max_height, y+k);
+									    mat[i+x+1][y+k+1][z+j+1].type = 3;
+									}
 								}
 							}
 						}
