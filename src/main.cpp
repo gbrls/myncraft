@@ -6,7 +6,6 @@
 ** TODO: remove wall between chunks
 ** TODO: tree leaves get cut by chunk borders
  * TODO: OpenGL "garbage collection" https://stackoverflow.com/questions/10573684/vertex-buffer-objects-delete-process-opengl
- * TODO: don't render chunks outise frustum
  */
 
 #include <SDL2/SDL.h>
@@ -18,6 +17,7 @@
 #include <sstream>
 #include <vector>
 #include <memory>
+#include <cmath>
 
 #include "include/graphics.hpp"
 #include "include/cubes.hpp"
@@ -36,6 +36,15 @@ string read_file(char* filename) {
 	}
 
 	return str;
+}
+
+
+static glm::vec3 yaw(glm::vec3 orig, float angle) {
+    glm::mat4 m = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0));
+    glm::vec4 tmp = glm::vec4(orig.x, orig.y, orig.z, 1);
+    tmp = m * tmp;
+
+    return glm::vec3(tmp.x, 0.0f, tmp.z);
 }
 
 int main(int argc, char *argv[]) {
@@ -86,7 +95,25 @@ int main(int argc, char *argv[]) {
 			auto c = p.second;
 
 			bool wire = (world.pos == (XYZ){c->X, c->Y, c->Z});
-			c->Draw(wire);
+			auto cpos = glm::vec3(c->X*32, c->Y*32, c->Z*32);
+            auto v1 = glm::vec3(0,0,1);
+
+			auto front = cam.forward;
+			front.y = 0;
+			front = glm::normalize(front);
+
+			auto left = yaw(front, -65);
+
+			auto chunkVec = cpos - cam.pos;
+			chunkVec.y = 0;
+			chunkVec = glm::normalize(chunkVec);
+
+			auto angle = glm::acos(glm::dot(chunkVec, front));
+            auto langle = glm::acos(glm::dot(left, front));
+
+            auto dist = glm::distance(cam.pos, cpos);
+            if((angle < langle || dist < 100.0f) && dist < 250.0f) c->Draw(wire);
+
 		}
 
 		sprintf(text->text, "(%0.2f, %0.2f, %0.2f)", cam.pos.x, cam.pos.y, cam.pos.z);

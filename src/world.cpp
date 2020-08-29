@@ -42,7 +42,7 @@ World::~World() {
 }
 
 void World::load(Camera& cam) {
-	int I=2,J=1,K=2;
+	int I=5,J=1,K=5;
 
 	std::vector<std::pair<int,std::pair<int,int>>> toLoad;
 

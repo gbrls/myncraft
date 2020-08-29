@@ -136,7 +136,7 @@ static GLuint square(float x, float y, float z) {
 
 Chunk::Chunk (int x, int y , int z) {
 	X=x,Y=y,Z=z;
-	memset(mat, 0, sizeof(mat));
+	//memset(mat, 0, sizeof(mat));
 	vao_cached.first = false;
 
 	mesh_p = NULL;
@@ -144,7 +144,7 @@ Chunk::Chunk (int x, int y , int z) {
 	//boxVao = square(x,y,z);
     //boxObj = ObjectMesh();
     //boxObj = ObjectMesh(square(x+x/2,y+y/2,z+z/2));
-    boxVao = square(x+0.5,y+0.5,z+0.5);
+    //boxVao = square(x+0.5,y+0.5,z+0.5);
 
 	//gen_terrain();
 	done_meshing = false;
@@ -183,6 +183,8 @@ void Chunk::gen_terrain() {
 			H *= 40;
 
 			for(int k=-1;k<SZ+1;k++) {
+
+			    mat[i+1][k+1][j+1].type = 0;
 
 				int tree_height = tree(H), y_coord = k+Y*32;
 				if(y_coord < H) { // placing block
@@ -398,8 +400,8 @@ void Chunk::Draw(bool wire) {
     //    glDrawArrays(GL_TRIANGLES, 0, boxObj.nvert);
     //}
 
-    if(wire) {
-        glBindVertexArray(boxVao);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
+    //if(wire) {
+    //    glBindVertexArray(boxVao);
+    //    glDrawArrays(GL_TRIANGLES, 0, 36);
+    //}
 }

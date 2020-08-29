@@ -10,34 +10,34 @@ Camera::Camera (int w, int h) {
 	ratio = (float)w/(float)h;
 
 	pos = glm::vec3(0.0, 0.0, -10.0);
-	foward = glm::vec3(0.0, 0.0, -1.0);
+    forward = glm::vec3(0.0, 0.0, -1.0);
 }
 
 glm::mat4 Camera::View() {
 	//                 pos   eye        up
-	return glm::lookAt(pos, pos+foward, glm::vec3(0, 1, 0));
+	return glm::lookAt(pos, pos + forward, glm::vec3(0, 1, 0));
 }
 
 glm::mat4 Camera::Proj() {
-	return glm::perspective(glm::radians(60.0f), ratio, 1.0f, 500.0f);
+	return glm::perspective(glm::radians(70.0f), ratio, 1.0f, 500.0f);
 }
 
 glm::vec3 Camera::Right() {
-	return glm::normalize(glm::cross(foward, glm::vec3(0, 1, 0)));
+	return glm::normalize(glm::cross(forward, glm::vec3(0, 1, 0)));
 }
 
 void Camera::RotateYaw(float angle) {
 	glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::radians(angle), glm::vec3(0, 1, 0));
-	glm::vec4 tmp = glm::vec4(foward.x, foward.y, foward.z, 1);
+	glm::vec4 tmp = glm::vec4(forward.x, forward.y, forward.z, 1);
 	tmp = m * tmp;
-	foward.x = tmp.x, foward.y = tmp.y, foward.z = tmp.z;
+    forward.x = tmp.x, forward.y = tmp.y, forward.z = tmp.z;
 }
 
 void Camera::RotatePitch(float angle) {
 	glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::radians(angle), Right());
-	glm::vec4 tmp = glm::vec4(foward.x, foward.y, foward.z, 1);
+	glm::vec4 tmp = glm::vec4(forward.x, forward.y, forward.z, 1);
 	tmp = m * tmp;
-	foward.x = tmp.x, foward.y = tmp.y, foward.z = tmp.z;
+    forward.x = tmp.x, forward.y = tmp.y, forward.z = tmp.z;
 }
 
 glm::vec3 Camera::ChunkPos() {
@@ -63,8 +63,8 @@ void Controls::Input(Camera& cam) {
 
 	if(IsKeyPressed(SDLK_SPACE)) cam.pos.y += cam_speed;
 	if(IsKeyPressed(SDLK_LSHIFT)) cam.pos.y -= cam_speed;
-	if(IsKeyPressed(SDLK_w)) cam.pos += cam.foward * cam_speed;
-	if(IsKeyPressed(SDLK_s)) cam.pos -= cam.foward * cam_speed;
+	if(IsKeyPressed(SDLK_w)) cam.pos += cam.forward * cam_speed;
+	if(IsKeyPressed(SDLK_s)) cam.pos -= cam.forward * cam_speed;
 	if(IsKeyPressed(SDLK_a)) cam.pos -= cam.Right() * cam_speed;
 	if(IsKeyPressed(SDLK_d)) cam.pos += cam.Right() * cam_speed;
 

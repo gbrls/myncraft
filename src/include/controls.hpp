@@ -10,7 +10,7 @@
 
 struct Camera {
 	glm::vec3 pos;
-	glm::vec3 foward;
+	glm::vec3 forward;
 	float yaw;
 	float ratio;
 	int W, H;
