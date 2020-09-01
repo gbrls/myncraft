@@ -37,7 +37,7 @@ Make sure you have SDL2 development libraries installed and then run the command
 	- The result of Perlin(x,y) is used as a seed to the tree generation algorithm.
 - Block's faces have normals.
 	- The normals are stored in the vertex data (in the mesh) as a sigle float, then it's transformed into a vector by the shader.
-- ~~Chunck's meshes are calculated in asynchronous calls.
+- ~~Chunck's meshes are calculated in asynchronous calls.~~
 	- ~~Maybe it wasn't a good idea because it affects the main thread, in which the main game loop is running~~.
 	-  They are now calculated in a single thread (different than the main).
 ### Kinda/Not Working (Issues)
