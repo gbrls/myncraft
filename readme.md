@@ -43,7 +43,7 @@ Make sure you have SDL2 development libraries installed and then run the command
 ### Kinda/Not Working (Issues)
 - Tree leaves are constrained by it's chunk, you can see that some trees have their leaves sliced.
 - The meshing algorithm does not take into account chunk to chunk occlusion, every chunk has it's outter shell meshed.
-- Camera coords to Chunk coords algorithm is not working properly.
+- ~~Camera coords to Chunk coords algorithm is not working properly.~~
 - ~~A async call to each chunk being genereted leads to a little lag to the main thread when a new chunk is generated.~~
 
 # Progress
