@@ -39,7 +39,7 @@ Make sure you have SDL2 development libraries installed and then run the command
 	- The normals are stored in the vertex data (in the mesh) as a sigle float, then it's transformed into a vector by the shader.
 - ~~Chunck's meshes are calculated in asynchronous calls.~~
 	- ~~Maybe it wasn't a good idea because it affects the main thread, in which the main game loop is running~~.
-	-  They are now calculated in a single thread (different than the main).
+	-  They are now calculated in a single thread (different from the main).
 ### Kinda/Not Working (Issues)
 - Tree leaves are constrained by it's chunk, you can see that some trees have their leaves sliced.
 - The meshing algorithm does not take into account chunk to chunk occlusion, every chunk has it's outter shell meshed.
