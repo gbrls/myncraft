@@ -37,12 +37,13 @@ Make sure you have SDL2 development libraries installed and then run the command
 	- The result of Perlin(x,y) is used as a seed to the tree generation algorithm.
 - Block's faces have normals.
 	- The normals are stored in the vertex data (in the mesh) as a sigle float, then it's transformed into a vector by the shader.
-- Chunck's meshes are calculated in asynchronous calls.
-	- Maybe it wasn't a good idea because it affects the main thread, in which the main game loop is running.
+- ~~Chunck's meshes are calculated in asynchronous calls.~~
+	- ~~Maybe it wasn't a good idea because it affects the main thread, in which the main game loop is running~~.
+	-  They are now calculated in a single thread (different from the main).
 ### Kinda/Not Working (Issues)
 - Tree leaves are constrained by it's chunk, you can see that some trees have their leaves sliced.
 - The meshing algorithm does not take into account chunk to chunk occlusion, every chunk has it's outter shell meshed.
-- Camera coords to Chunk coords algorithm is not working properly.
+- ~~Camera coords to Chunk coords algorithm is not working properly.~~
 - ~~A async call to each chunk being genereted leads to a little lag to the main thread when a new chunk is generated.~~
 
 # Progress
