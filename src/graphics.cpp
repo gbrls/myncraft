@@ -174,6 +174,7 @@ void Context::draw(Camera cam, const std::function <void ()>& f) {
 
 	// moving the matrix to the camera
 	setUniformMatrix(cam.View(), CurShader(), (char*)"view");
+    setUniformVec3(cam.pos, CurShader(), (char*)"pos");
 
 	float t = (float)SDL_GetTicks()/1000.0f;
 

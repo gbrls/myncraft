@@ -9,10 +9,13 @@ out vec3 Color;
 out vec3 TexCoord;
 out float Normal;
 out float Light;
+out vec3 Pos;
+out vec3 Position;
 
 uniform mat4 view;
 uniform mat4 proj;
 uniform mat4 model;
+uniform vec3 pos;
 
 void main() {
     gl_Position = proj * view * model * vec4(position, 1.0);
@@ -20,6 +23,8 @@ void main() {
     TexCoord = texcoord;
     Normal = normal;
     Light = light;
+    Pos = pos;
+    Position = position;
 }
 
 //
