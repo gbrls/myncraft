@@ -7,7 +7,7 @@
 - glm
 
 For debian based distributions they are:
-`libglew-dev libsdl2-dev libglm-dev`
+`libglew-dev libsdl2-dev libsdl2-ttf-dev libglm-dev`
 
 Make sure you have SDL2 development libraries installed and then run the command bellow.   
 `git clone "https://github.com/gbrls/myncraft/" && cd myncraft && make all`
