@@ -54,9 +54,9 @@ void main() {
     float l = clamp(Light*2, 3, 10) * 0.1;
     vec4 c = mix(idx_color, wirecolor, percentage);
 
-    //outColor = vec4(c.rgb, c.a);
-    float f = fog(distance(Position, Pos));
-    outColor = mix(c, vec4(0.1,0.2,0.4,c.a), f);
+    outColor = vec4(c.rgb, c.a);
+    //float f = fog(distance(Position, Pos));
+    //outColor = mix(c, vec4(0.1,0.2,0.4,c.a), f);
     //0.1f,0.2f,0.4f,1.0f
 }
 
